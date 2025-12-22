@@ -10,11 +10,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      # We could run falkordb as a sidecar, but since your test harness 
-      # manages the container lifecycle manually, we'll let the harness handle it.
-      # Note: The runner needs Docker installed (standard on ubuntu-latest).
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

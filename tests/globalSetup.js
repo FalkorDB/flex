@@ -36,6 +36,6 @@ module.exports = async () => {
             }
         });
 
-        setTimeout(() => reject('Docker FalkorDB failed to start in 10s'), 10000);
+        setTimeout(() => reject('Docker FalkorDB failed to start in 90s'), 90000);
     });
 };

@@ -1,0 +1,23 @@
+# --- Dependencies ---
+node_modules/
+package-lock.json
+
+# --- Build Artifacts ---
+# We ignore the dist folder because it is generated from src/
+dist/
+
+# --- Testing & Logs ---
+# Ignore Jest coverage reports
+coverage/
+# Ignore any crash reports or logs from FalkorDB/Redis
+*.log
+dump.rdb
+appendonlydir/
+
+# --- OS & IDE Specific ---
+.DS_Store
+.vscode/
+.idea/
+
+# --- Environment ---
+.env

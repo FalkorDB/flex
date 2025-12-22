@@ -1,0 +1,39 @@
+name: FLEX CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      # We could run falkordb as a sidecar, but since your test harness 
+      # manages the container lifecycle manually, we'll let the harness handle it.
+      # Note: The runner needs Docker installed (standard on ubuntu-latest).
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build FLEX Bundle
+        run: npm run build
+
+      - name: Run Tests
+        # The test harness will spawn the falkordb docker container
+        run: npm test
+        env:
+          # Ensure Docker is accessible to the Node process
+          DEBUG: "true"

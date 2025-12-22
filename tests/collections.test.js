@@ -10,10 +10,6 @@ describe('FLEX Text Module Integration Tests', () => {
         graph = env.graph;
     });
 
-    afterAll(async () => {
-        await db.connection.quit();
-    });
-
     // Step 3: Test each flex function
     test('flex.text.toReverse should reverse a string', async () => {
         const query = "RETURN flex.text.reverse('falkor')";

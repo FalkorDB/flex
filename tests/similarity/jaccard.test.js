@@ -1,6 +1,6 @@
-const { initializeFLEX } = require('./setup');
+const { initializeFLEX } = require('../setup');
 
-describe('FLEX Similarity Module Integration Tests', () => {
+describe('FLEX Jaccard Integration Tests', () => {
     let db, graph;
 
     // Start/Connect and Load FLEX
@@ -10,7 +10,6 @@ describe('FLEX Similarity Module Integration Tests', () => {
         graph = env.graph;
     });
 
-    // Test similarity union
     test('flex.jaccard', async () => {
 		await graph.query(`CREATE
 		(eve:Person   {name: 'Eve'}),

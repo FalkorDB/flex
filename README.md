@@ -33,14 +33,15 @@ redis-cli -h<host> -p<port> GRAPH.UDF LOAD flex "$(cat src/flex.js)"
 📚 Function Categories
 FLEX is organized into modular namespaces to keep your namespace clean.
 
-Category,         Namespace,   Description
-String Utilities, flex.text.*, Regex, casing, fuzzy matching, and text cleaning.
-Collections,      flex.coll.*, Set operations, flattening, shuffling, and list partitioning.
-Maps,             flex.map.*,  Deep merging, key management, and JSON manipulation.
-Similarity,       flex.sim.*,  Vector cosine similarity, Jaccard index, and Levenshtein distance.
-Math & Stats,     flex.math.*, Percentiles, standard deviation, and random generation.
-Temporal,         flex.date.*, Date formatting, parsing, and duration arithmetic.
-System,           flex.sys.*,  Utilities for pausing execution (sleep) and system introspection.
+| Category             | Namespace     | Description                                                        |
+| :---                 | :---          | :---                                                               |
+| **String Utilities** | `flex.text.*` | Regex, casing, fuzzy matching, and text cleaning.                  |
+| **Collections**      | `flex.coll.*` | Set operations, flattening, shuffling, and list partitioning.      |
+| **Maps**             | `flex.map.*`  | Deep merging, key management, and JSON manipulation.               |
+| **Similarity**       | `flex.sim.*`  | Vector cosine similarity, Jaccard index, and Levenshtein distance. |
+| **Math & Stats**     | `flex.math.*` | Percentiles, standard deviation, and random generation.            |
+| **Temporal**         | `flex.date.*` | Date formatting, parsing, and duration arithmetic.                 |
+| **System**           | `flex.sys.*`  | Utilities for pausing execution (sleep) and system introspection.  |
 
 
 💡 Usage Examples

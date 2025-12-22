@@ -1,0 +1,31 @@
+{
+  "name": "flex",
+  "version": "1.0.0",
+  "description": "![FLEX Status](https://img.shields.io/badge/status-active-success.svg) ![FalkorDB Version](https://img.shields.io/badge/FalkorDB-0.1.0+-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg)",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FalkorDB/flex.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/FalkorDB/flex/issues"
+  },
+  "homepage": "https://github.com/FalkorDB/flex#readme",
+  "devDependencies": {
+    "falkordb": "^6.4.1",
+    "jest": "^29.7.0"
+  },
+  "scripts": {
+  "test": "jest --verbose --runInBand"
+  }
+}

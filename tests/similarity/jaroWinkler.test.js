@@ -58,7 +58,6 @@ describe('FLEX Jaro-Winkler Integration Tests', () => {
     });
 
     test('flex.sim.jaroWinkler symmetry', async () => {
-		console.log("Im here!");
         const q = `
         RETURN
             flex.sim.jaroWinkler('distance', 'editing') AS d1,
@@ -67,8 +66,6 @@ describe('FLEX Jaro-Winkler Integration Tests', () => {
 
         const result = await graph.query(q);
 
-		console.log("result.data[0]['d1']: " + result.data[0]['d1']);
-		console.log("result.data[0]['d2']: " + result.data[0]['d2']);
         expect(result.data[0]['d1']).toBe(result.data[0]['d2']);
     });
 });

@@ -1,4 +1,4 @@
-const { initializeFLEX } = require('./setup');
+const { initializeFLEX } = require('../setup');
 
 describe('FLEX Collections union Module Integration Tests', () => {
     let db, graph;
@@ -10,14 +10,22 @@ describe('FLEX Collections union Module Integration Tests', () => {
         graph = env.graph;
     });
 
-    // Test collection union
-    test('flex.union', async () => {
-        const query = "RETURN flex.union([1, 2], [2, 3])";
-        const result = await graph.query(query);
-        expect(result.data[0][0]).toBe([1, 2, 3]);
-
-        const query = "RETURN flex.union([1, 2], [])";
-        const result = await graph.query(query);
-        expect(result.data[0][0]).toBe([1, 2]);
+	afterAll(async () => {
+        // Close the main client connection
+        if (db) {
+            await db.close();
+            // Note: In some versions, db.quit() is used instead
+        }
     });
+
+    // Test collection union
+	test('flex.coll.union', async () => {
+		let query = "RETURN flex.coll.union([1, 2], [2, 3]) AS union";
+		let result = await graph.query(query);
+		expect(result.data[0]['union'].sort((a, b) => a - b)).toEqual([1, 2, 3]);
+
+		query = "RETURN flex.coll.union([1, 2], []) AS union";
+		result = await graph.query(query);
+		expect(result.data[0]['union'].sort((a, b) => a - b)).toEqual([1, 2]);
+	});
 });

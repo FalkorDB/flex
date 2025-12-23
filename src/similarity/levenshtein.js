@@ -58,4 +58,4 @@ function levenshtein(a, b) {
     return prev[b.length];
 }
 
-falkor.register('levenshtein', levenshtein);
+falkor.register('sim.levenshtein', levenshtein);

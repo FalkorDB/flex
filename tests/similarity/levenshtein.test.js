@@ -10,7 +10,15 @@ describe('FLEX Levenshtein Integration Tests', () => {
         graph = env.graph;
     });
 
-    test('flex.levenshtein basic string distance', async () => {
+	afterAll(async () => {
+        // Close the main client connection
+        if (db) {
+            await db.close();
+            // Note: In some versions, db.quit() is used instead
+        }
+    });
+
+    test('flex.sim.levenshtein basic string distance', async () => {
         const q = `
         UNWIND [
             ['kitten',  'sitting'],
@@ -24,46 +32,46 @@ describe('FLEX Levenshtein Integration Tests', () => {
         RETURN
             pair[0] AS a,
             pair[1] AS b,
-            flex.levenshtein(pair[0], pair[1]) AS dist
+            flex.sim.levenshtein(pair[0], pair[1]) AS dist
         ORDER BY a, b
         `;
 
         const result = await graph.query(q);
 
-        expect(result.data[0]).toEqual(['', 'abc', 3]);
-        expect(result.data[1]).toEqual(['abc', '', 3]);
-        expect(result.data[2]).toEqual(['book', 'back', 2]);
-        expect(result.data[3]).toEqual(['flaw', 'lawn', 2]);
-        expect(result.data[4]).toEqual(['gumbo', 'gambol', 2]);
-        expect(result.data[5]).toEqual(['kitten', 'sitting', 3]);
-        expect(result.data[6]).toEqual(['same', 'same', 0]);
+        expect(result.data[0]).toEqual({'a': '',       'b': 'abc',     'dist': 3});
+        expect(result.data[1]).toEqual({'a': 'abc',    'b': '',        'dist': 3});
+        expect(result.data[2]).toEqual({'a': 'book',   'b': 'back',    'dist': 2});
+        expect(result.data[3]).toEqual({'a': 'flaw',   'b': 'lawn',    'dist': 2});
+        expect(result.data[4]).toEqual({'a': 'gumbo',  'b': 'gambol',  'dist': 2});
+        expect(result.data[5]).toEqual({'a': 'kitten', 'b': 'sitting', 'dist': 3});
+        expect(result.data[6]).toEqual({'a': 'same',   'b': 'same',    'dist': 0});
     });
 
-    test('flex.levenshtein handles nulls gracefully', async () => {
+    test('flex.sim.levenshtein handles nulls gracefully', async () => {
         const q = `
         RETURN
-            flex.levenshtein(NULL, 'abc')  AS d1,
-            flex.levenshtein('abc', NULL)  AS d2,
-            flex.levenshtein(NULL, NULL)   AS d3
+            flex.sim.levenshtein(NULL, 'abc')  AS d1,
+            flex.sim.levenshtein('abc', NULL)  AS d2,
+            flex.sim.levenshtein(NULL, NULL)   AS d3
         `;
 
         const result = await graph.query(q);
 
-        expect(result.data[0][0]).toBe(3);
-        expect(result.data[0][1]).toBe(3);
-        expect(result.data[0][2]).toBe(0);
+        expect(result.data[0]['d1']).toBe(3);
+        expect(result.data[0]['d2']).toBe(3);
+        expect(result.data[0]['d3']).toBe(0);
     });
 
-    test('flex.levenshtein symmetry', async () => {
+    test('flex.sim.levenshtein symmetry', async () => {
         const q = `
         RETURN
-            flex.levenshtein('distance', 'editing') AS d1,
-            flex.levenshtein('editing', 'distance') AS d2
+            flex.sim.levenshtein('distance', 'editing') AS d1,
+            flex.sim.levenshtein('editing', 'distance') AS d2
         `;
 
         const result = await graph.query(q);
 
-        expect(result.data[0][0]).toBe(result.data[0][1]);
+        expect(result.data[0]['d1']).toBe(result.data[0]['d2']);
     });
 });
 

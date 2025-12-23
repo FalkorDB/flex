@@ -9,12 +9,20 @@ describe('FLEX coll.shuffle Integration Tests', () => {
         graph = env.graph;
     });
 
+	afterAll(async () => {
+        // Close the main client connection
+        if (db) {
+            await db.close();
+            // Note: In some versions, db.quit() is used instead
+        }
+    });
+
     test('flex.coll.shuffle basic list', async () => {
         const q = `
         RETURN flex.coll.shuffle([1, 2, 3, 4, 5]) AS shuffled
         `;
         const result = await graph.query(q);
-        const shuffled = result.result_set[0][0];
+        const shuffled = result.data[0]['shuffled'];
 
         // Assert same elements
         expect(shuffled.sort()).toEqual([1, 2, 3, 4, 5]);
@@ -30,7 +38,7 @@ describe('FLEX coll.shuffle Integration Tests', () => {
         RETURN flex.coll.shuffle([]) AS shuffled
         `;
         const result = await graph.query(q);
-        expect(result.result_set[0][0]).toEqual([]);
+        expect(result.data[0]['shuffled']).toEqual([]);
     });
 
     test('flex.coll.shuffle null input returns empty list', async () => {
@@ -38,7 +46,7 @@ describe('FLEX coll.shuffle Integration Tests', () => {
         RETURN flex.coll.shuffle(NULL) AS shuffled
         `;
         const result = await graph.query(q);
-        expect(result.result_set[0][0]).toEqual([]);
+        expect(result.data[0]['shuffled']).toEqual([]);
     });
 
     test('flex.coll.shuffle preserves all original elements', async () => {
@@ -47,7 +55,7 @@ describe('FLEX coll.shuffle Integration Tests', () => {
         RETURN flex.coll.shuffle(['a', 'b', 'c', 'd']) AS shuffled
         `;
         const result = await graph.query(q);
-        const shuffled = result.result_set[0][0];
+        const shuffled = result.data[0]['shuffled'];
         expect(shuffled.sort()).toEqual(original.sort());
     });
 });

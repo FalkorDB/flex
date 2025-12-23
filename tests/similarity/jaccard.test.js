@@ -10,7 +10,15 @@ describe('FLEX Jaccard Integration Tests', () => {
         graph = env.graph;
     });
 
-    test('flex.jaccard', async () => {
+	afterAll(async () => {
+        // Close the main client connection
+        if (db) {
+            await db.close();
+            // Note: In some versions, db.quit() is used instead
+        }
+    });
+
+    test('flex.sim.jaccard', async () => {
 		await graph.query(`CREATE
 		(eve:Person   {name: 'Eve'}),
 		(bob:Person   {name: 'Bob'}),
@@ -29,25 +37,25 @@ describe('FLEX Jaccard Integration Tests', () => {
 		(alice)-[:FRIEND]->(dave)`)
 
 		const q = `MATCH (alice:Person {name: 'Alice'}), (n)
-				   RETURN n.name, flex.jaccard(alice, n) AS sim
+				   RETURN n.name AS name, flex.sim.jaccard(alice, n) AS sim
 				   ORDER BY n.name`
 
         const result = await graph.query(q);
 
-        expect(result.data[0][0]).toBe('Alice');
-        expect(result.data[0][1]).toBe(1);
+        expect(result.data[0]['name']).toBe('Alice');
+        expect(result.data[0]['sim']).toBe(1);
 
-        expect(result.data[1][0]).toBe('Bob');
-        expect(result.data[1][1]).toBe(0.2);
+        expect(result.data[1]['name']).toBe('Bob');
+        expect(result.data[1]['sim']).toBe(0.2);
 
-        expect(result.data[2][0]).toBe('Carol');
-        expect(result.data[2][1]).toBe(0.25);
+        expect(result.data[2]['name']).toBe('Carol');
+        expect(result.data[2]['sim']).toBe(0.25);
 
-        expect(result.data[3][0]).toBe('Dave');
-        expect(result.data[3][1]).toBe(0);
+        expect(result.data[3]['name']).toBe('Dave');
+        expect(result.data[3]['sim']).toBe(0);
 
-        expect(result.data[4][0]).toBe('Eve');
-        expect(result.data[4][1]).toBe(0.33333);
+        expect(result.data[4]['name']).toBe('Eve');
+        expect(result.data[4]['sim']).toBe(0.333333333333333);
     });
 });
 

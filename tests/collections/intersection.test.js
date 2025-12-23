@@ -1,4 +1,4 @@
-const { initializeFLEX } = require('./setup');
+const { initializeFLEX } = require('../setup');
 
 describe('FLEX Collections intersection Module Integration Tests', () => {
     let db, graph;
@@ -10,30 +10,38 @@ describe('FLEX Collections intersection Module Integration Tests', () => {
         graph = env.graph;
     });
 
+	afterAll(async () => {
+        // Close the main client connection
+        if (db) {
+            await db.close();
+            // Note: In some versions, db.quit() is used instead
+        }
+    });
+
     // Test collection intersection
-    test('flex.intersection', async () => {
-        const query = "RETURN flex.intersection([1, 2], [1, 2])";
-        const result = await graph.query(query);
-        expect(result.data[0][0]).toBe([1, 2]);
+    test('flex.coll.intersection', async () => {
+        let query = "RETURN flex.coll.intersection([1, 2], [1, 2]) AS inter";
+        let result = await graph.query(query);
+        expect(result.data[0]['inter']).toEqual([1, 2]);
 
-        const query = "RETURN flex.intersection([1, 2], [2, 3])";
-        const result = await graph.query(query);
-        expect(result.data[0][0]).toBe([2]);
+        query = "RETURN flex.coll.intersection([1, 2], [2, 3]) AS inter";
+        result = await graph.query(query);
+        expect(result.data[0]['inter']).toEqual([2]);
 
-        const query = "RETURN flex.intersection([1, 2], [3, 4])";
-        const result = await graph.query(query);
-        expect(result.data[0][0]).toBe([]);
+        query = "RETURN flex.coll.intersection([1, 2], [3, 4]) AS inter";
+        result = await graph.query(query);
+        expect(result.data[0]['inter']).toEqual([]);
 
-        const query = "RETURN flex.union([1, 2], [])";
-        const result = await graph.query(query);
-        expect(result.data[0][0]).toBe([]);
+        query = "RETURN flex.coll.intersection([1, 2], []) AS inter";
+        result = await graph.query(query);
+        expect(result.data[0]['inter']).toEqual([]);
 
-        const query = "RETURN flex.union([], [1, 2])";
-        const result = await graph.query(query);
-        expect(result.data[0][0]).toBe([]);
+        query = "RETURN flex.coll.intersection([], [1, 2]) AS inter";
+        result = await graph.query(query);
+        expect(result.data[0]['inter']).toEqual([]);
 
-        const query = "RETURN flex.union([], [])";
-        const result = await graph.query(query);
-        expect(result.data[0][0]).toBe([]);
+        query = "RETURN flex.coll.intersection([], []) AS inter";
+        result = await graph.query(query);
+        expect(result.data[0]['inter']).toEqual([]);
     });
 });

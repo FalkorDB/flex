@@ -8,4 +8,4 @@ function jaccard(n, m) {
     return unionSize === 0 ? 0 : intersectionSize / unionSize;
 }
 
-falkor.register('jaccard', jaccard);
+falkor.register('sim.jaccard', jaccard);

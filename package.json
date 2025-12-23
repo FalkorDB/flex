@@ -27,6 +27,6 @@
   },
   "scripts": {
   "build": "node build.js",
-  "test": "npm run build && jest --verbose --runInBand"
+  "test": "npm run build && jest --verbose --runInBand --forceExit"
   }
 }

@@ -11,7 +11,6 @@ async function initializeFLEX(graphName = 'G') {
     const textSrc = fs.readFileSync(path.join(__dirname, '../dist/flex.js'), 'utf8');
 
     try {
-		console.log("conn:" + conn);
         await conn.sendCommand(['GRAPH.UDF', 'LOAD', 'REPLACE', 'flex', textSrc]);
         console.log("✅ FLEX library loaded successfully");
     } catch (err) {

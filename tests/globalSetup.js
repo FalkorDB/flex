@@ -14,7 +14,7 @@ module.exports = async () => {
         '--name', containerName,
         '--rm',                 // Automatically remove container on exit
         '-p', '6379:6379',      // Map default port
-        'falkordb/falkordb:latest'
+        'falkordb/falkordb:edge'
     ]);
 
     global.__FALKOR_CONTAINER_NAME__ = containerName;

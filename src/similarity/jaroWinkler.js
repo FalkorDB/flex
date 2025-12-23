@@ -77,3 +77,4 @@ function jaroWinkler(s1, s2) {
     return jaro + prefix * scalingFactor * (1 - jaro);
 }
 
+falkor.register("sim.jaroWinkler", jaroWinkler);

@@ -1,3 +1,7 @@
+/*
+ * Copyright FalkorDB Ltd. 2023 - present
+ */
+
 function intersection (a, b) {
   const setB = new Set(b);
   return a.filter(x => setB.has(x));

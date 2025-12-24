@@ -1,3 +1,7 @@
+/*
+ * Copyright FalkorDB Ltd. 2023 - present
+ */
+
 module.exports = {
     globalSetup: './tests/globalSetup.js',
     globalTeardown: './tests/globalTeardown.js',

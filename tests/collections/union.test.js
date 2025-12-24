@@ -1,3 +1,7 @@
+/*
+ * Copyright FalkorDB Ltd. 2023 - present
+ */
+
 const { initializeFLEX } = require('../setup');
 
 describe('FLEX Collections union Module Integration Tests', () => {

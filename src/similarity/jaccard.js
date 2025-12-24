@@ -1,3 +1,7 @@
+/*
+ * Copyright FalkorDB Ltd. 2023 - present
+ */
+
 function jaccard(n, m) {
     const nIds = n.getNeighbors().map(x => x.id);
     const mIds = m.getNeighbors().map(x => x.id);

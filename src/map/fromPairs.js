@@ -1,3 +1,7 @@
+/*
+ * Copyright FalkorDB Ltd. 2023 - present
+ */
+
 /**
  * Convert a list of [key, value] pairs into a map
  *

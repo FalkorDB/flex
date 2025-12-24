@@ -1,3 +1,7 @@
+/*
+ * Copyright FalkorDB Ltd. 2023 - present
+ */
+
 /**
  * Compute Levenshtein edit distance between two strings.
  *

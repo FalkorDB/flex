@@ -1,3 +1,7 @@
+/*
+ * Copyright FalkorDB Ltd. 2023 - present
+ */
+
 const { execSync, spawn } = require('child_process');
 
 module.exports = async () => {

@@ -26,29 +26,4 @@ function removeKey(map, key) {
     return result;
 }
 
-/**
- * Convert a list of [key, value] pairs into a map
- *
- * @param {Array|null} pairs
- * @returns {Object}
- */
-function fromPairs(pairs) {
-    if (!Array.isArray(pairs)) return {};
-
-    const result = {};
-
-    for (const pair of pairs) {
-        if (Array.isArray(pair) && pair.length === 2) {
-            const [key, value] = pair;
-            if (key != null) {
-                result[key] = value;
-            }
-        }
-    }
-
-    return result;
-}
-
 falkor.register('map.removeKey', removeKey);
-falkor.register('map.fromPairs', fromPairs);
-

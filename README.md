@@ -33,15 +33,16 @@ redis-cli -h<host> -p<port> GRAPH.UDF LOAD flex "$(cat src/flex.js)"
 📚 Function Categories
 FLEX is organized into modular namespaces to keep your namespace clean.
 
-| Category             | Namespace     | Description                                                        |
-| :---                 | :---          | :---                                                               |
-| **String Utilities** | `flex.text.*` | Regex, casing, fuzzy matching, and text cleaning.                  |
-| **Collections**      | `flex.coll.*` | Set operations, flattening, shuffling, and list partitioning.      |
-| **Maps**             | `flex.map.*`  | Deep merging, key management, and JSON manipulation.               |
-| **Similarity**       | `flex.sim.*`  | Vector cosine similarity, Jaccard index, and Levenshtein distance. |
-| **Math & Stats**     | `flex.math.*` | Percentiles, standard deviation, and random generation.            |
-| **Temporal**         | `flex.date.*` | Date formatting, parsing, and duration arithmetic.                 |
-| **System**           | `flex.sys.*`  | Utilities for pausing execution (sleep) and system introspection.  |
+| Category             | Namespace       | Description                                                        |
+| :---                 | :---            | :---                                                               |
+| **String Utilities** | `flex.text.*`   | Regex, casing, fuzzy matching, and text cleaning.                  |
+| **Collections**      | `flex.coll.*`   | Set operations, flattening, shuffling, and list partitioning.      |
+| **Maps**             | `flex.map.*`    | Deep merging, key management, and JSON manipulation.               |
+| **JSON**             | `flex.json.*`   | Safe JSON parse/serialize helpers for maps and lists.              |
+| **Similarity**       | `flex.sim.*`    | Vector cosine similarity, Jaccard index, and Levenshtein distance. |
+| **Math & Stats**     | `flex.math.*`   | Percentiles, standard deviation, and random generation.            |
+| **Temporal**         | `flex.date.*`   | Date formatting, parsing, truncation, and timezone conversion.     |
+| **System**           | `flex.sys.*`    | Utilities for pausing execution (sleep) and system introspection.  |
 
 
 💡 Usage Examples
@@ -77,6 +78,17 @@ CREATE (e:Event {
     tags: flex.coll.toSet(event.tags), // Remove duplicates
     timestamp: flex.date.parse(event.date_str, "YYYY-MM-DD")
 })
+```
+
+4. JSON & Map Utilities
+Safely ingest semi-structured JSON and normalize maps.
+
+```cypher
+WITH '{"id": 1, "name": "Alice", "extra": {"foo": 1}}' AS payload
+WITH flex.json.fromJsonMap(payload) AS m
+RETURN flex.map.submap(m, ['id','name'])      AS core,
+       flex.map.merge(m.extra, {bar: 2})      AS merged_extra,
+       flex.json.toJson(m)                    AS raw_json;
 ```
 
 🛠️ Building & Contributing

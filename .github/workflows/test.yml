@@ -41,8 +41,5 @@ jobs:
           name: coverage-report
           path: coverage/
 
-      - name: Jest Coverage Report
-        uses: xrt6/jest-coverage-report-action@v2
-        if: github.event_name == 'pull_request'
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Collect test coverage
+        uses: ArtiomTr/jest-coverage-report-action@v2

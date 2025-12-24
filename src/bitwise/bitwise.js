@@ -32,3 +32,17 @@ falkor.register('bitwise.xor', xor);
 falkor.register('bitwise.not', not);
 falkor.register('bitwise.shiftLeft', shiftLeft);
 falkor.register('bitwise.shiftRight', shiftRight);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        and,
+        or,
+        xor,
+        not,
+        shiftLeft,
+        shiftRight
+    };
+}

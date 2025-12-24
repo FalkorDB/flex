@@ -3,6 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
+const collectionsModule = require('../../src/collections/frequencies');
 
 describe('FLEX coll.frequencies Integration Tests', () => {
     let db, graph;
@@ -27,6 +28,8 @@ describe('FLEX coll.frequencies Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['freq']).toEqual({ "1":1, "2":2, "3":3 });
+
+        expect(collectionsModule.frequencies([1,2,2,3,3,3])).toEqual({ "1":1, "2":2, "3":3 });
     });
 
     test('flex.coll.frequencies counts strings', async () => {
@@ -35,6 +38,8 @@ describe('FLEX coll.frequencies Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['freq']).toEqual({ a:3, b:2, c:1 });
+
+        expect(collectionsModule.frequencies(['a','b','a','c','b','a'])).toEqual({ a:3, b:2, c:1 });
     });
 
     test('flex.coll.frequencies handles null elements', async () => {
@@ -43,6 +48,8 @@ describe('FLEX coll.frequencies Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['freq']).toEqual({ "1":1, "2":2, "null":2 });
+
+        expect(collectionsModule.frequencies([1,null,2,null,2])).toEqual({ "1":1, "2":2, "null":2 });
     });
 
     test('flex.coll.frequencies empty list returns empty map', async () => {
@@ -51,6 +58,8 @@ describe('FLEX coll.frequencies Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['freq']).toEqual({});
+
+        expect(collectionsModule.frequencies([])).toEqual({});
     });
 
     test('flex.coll.frequencies null input returns empty map', async () => {
@@ -59,6 +68,8 @@ describe('FLEX coll.frequencies Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['freq']).toEqual({});
+
+        expect(collectionsModule.frequencies(null)).toEqual({});
     });
 });
 

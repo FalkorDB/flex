@@ -3,6 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
+const bitwiseModule = require('../../src/bitwise/bitwise');
 
 describe('FLEX Bitwise Module Integration Tests', () => {
     let db, graph;
@@ -26,6 +27,8 @@ describe('FLEX Bitwise Module Integration Tests', () => {
         const query = "RETURN flex.bitwise.and(12, 10) AS res";
         const result = await graph.query(query);
         expect(result.data[0]['res']).toBe(8);
+
+		expect(bitwiseModule.and(12, 10)).toBe(8);
     });
 
     // Test Bitwise OR
@@ -34,6 +37,8 @@ describe('FLEX Bitwise Module Integration Tests', () => {
         const query = "RETURN flex.bitwise.or(12, 10) AS res";
         const result = await graph.query(query);
         expect(result.data[0]['res']).toBe(14);
+
+		expect(bitwiseModule.or(12, 10)).toBe(14);
     });
 
     // Test Bitwise XOR
@@ -42,6 +47,8 @@ describe('FLEX Bitwise Module Integration Tests', () => {
         const query = "RETURN flex.bitwise.xor(12, 10) AS res";
         const result = await graph.query(query);
         expect(result.data[0]['res']).toBe(6);
+
+		expect(bitwiseModule.xor(12, 10)).toBe(6);
     });
 
     // Test Bitwise NOT
@@ -50,6 +57,8 @@ describe('FLEX Bitwise Module Integration Tests', () => {
         const query = "RETURN flex.bitwise.not(15) AS res";
         const result = await graph.query(query);
         expect(result.data[0]['res']).toBe(-16);
+
+		expect(bitwiseModule.not(15)).toBe(-16);
     });
 
     // Test Bitwise Shift Left
@@ -58,6 +67,8 @@ describe('FLEX Bitwise Module Integration Tests', () => {
         const query = "RETURN flex.bitwise.shiftLeft(5, 2) AS res";
         const result = await graph.query(query);
         expect(result.data[0]['res']).toBe(20);
+
+		expect(bitwiseModule.shiftLeft(5, 2)).toBe(20);
     });
 
     // Test Bitwise Shift Right
@@ -66,5 +77,7 @@ describe('FLEX Bitwise Module Integration Tests', () => {
         const query = "RETURN flex.bitwise.shiftRight(20, 2) AS res";
         const result = await graph.query(query);
         expect(result.data[0]['res']).toBe(5);
+
+		expect(bitwiseModule.shiftRight(20, 2)).toBe(5);
     });
 });

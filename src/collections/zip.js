@@ -23,3 +23,12 @@ function zip(list1, list2) {
 }
 
 falkor.register('coll.zip', zip);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        zip
+    };
+}

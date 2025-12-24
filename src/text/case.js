@@ -53,3 +53,17 @@ falkor.register('text.snakeCase', snakeCase);
 falkor.register('text.capitalize', capitalize);
 falkor.register('text.decapitalize', decapitalize);
 falkor.register('text.upperCamelCase', upperCamelCase);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        swapCase,
+        camelCase,
+        snakeCase,
+        capitalize,
+        decapitalize,
+        upperCamelCase
+    };
+}

@@ -26,9 +26,23 @@ jobs:
       - name: Build FLEX Bundle
         run: npm run build
 
-      - name: Run Tests
-        # The test harness will spawn the falkordb docker container
-        run: npm test
+      - name: Run Tests with Coverage
+        # Because coverageThreshold is in jest.config.js, 
+        # this step will fail if coverage is < 90%
+        run: npm test -- --coverage 
         env:
-          # Ensure Docker is accessible to the Node process
           DEBUG: "true"
+
+      - name: Upload Coverage Report
+        # This keeps the HTML report available for 14 days in the "Actions" tab
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+
+      - name: Jest Coverage Report
+        uses: xrt6/jest-coverage-report-action@v2
+        if: github.event_name == 'pull_request'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

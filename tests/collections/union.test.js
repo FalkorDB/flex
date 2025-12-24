@@ -3,6 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
+const unionModule = require('../../src/collections/union');
 
 describe('FLEX Collections union Module Integration Tests', () => {
     let db, graph;
@@ -27,9 +28,11 @@ describe('FLEX Collections union Module Integration Tests', () => {
 		let query = "RETURN flex.coll.union([1, 2], [2, 3]) AS union";
 		let result = await graph.query(query);
 		expect(result.data[0]['union'].sort((a, b) => a - b)).toEqual([1, 2, 3]);
+		expect(unionModule.union([1, 2], [2, 3]).sort((a, b) => a - b)).toEqual([1, 2, 3]);
 
 		query = "RETURN flex.coll.union([1, 2], []) AS union";
 		result = await graph.query(query);
 		expect(result.data[0]['union'].sort((a, b) => a - b)).toEqual([1, 2]);
+		expect(unionModule.union([1, 2], []).sort((a, b) => a - b)).toEqual([1, 2]);
 	});
 });

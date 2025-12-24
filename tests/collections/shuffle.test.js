@@ -3,6 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
+const shuffleModule = require('../../src/collections/shuffle');
 
 describe('FLEX coll.shuffle Integration Tests', () => {
     let db, graph;
@@ -30,6 +31,7 @@ describe('FLEX coll.shuffle Integration Tests', () => {
 
         // Assert same elements
         expect(shuffled.sort()).toEqual([1, 2, 3, 4, 5]);
+        expect(shuffleModule.shuffle([1, 2, 3, 4, 5]).sort()).toEqual([1, 2, 3, 4, 5]);
 
         // Assert at least one element moved (probabilistic)
         const sameOrder = [1, 2, 3, 4, 5].every((v, i) => v === shuffled[i]);
@@ -43,6 +45,7 @@ describe('FLEX coll.shuffle Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['shuffled']).toEqual([]);
+        expect(shuffleModule.shuffle([])).toEqual([]);
     });
 
     test('flex.coll.shuffle null input returns empty list', async () => {
@@ -51,6 +54,7 @@ describe('FLEX coll.shuffle Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['shuffled']).toEqual([]);
+        expect(shuffleModule.shuffle(null)).toEqual([]);
     });
 
     test('flex.coll.shuffle preserves all original elements', async () => {
@@ -61,6 +65,7 @@ describe('FLEX coll.shuffle Integration Tests', () => {
         const result = await graph.query(q);
         const shuffled = result.data[0]['shuffled'];
         expect(shuffled.sort()).toEqual(original.sort());
+        expect(shuffleModule.shuffle(['a', 'b', 'c', 'd']).sort()).toEqual(original.sort());
     });
 });
 

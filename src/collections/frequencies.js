@@ -23,3 +23,12 @@ function frequencies(list) {
 }
 
 falkor.register("coll.frequencies", frequencies);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        frequencies
+    };
+}

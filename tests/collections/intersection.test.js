@@ -3,6 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
+const collectionsModule = require('../../src/collections/intersection');
 
 describe('FLEX Collections intersection Module Integration Tests', () => {
     let db, graph;
@@ -27,25 +28,31 @@ describe('FLEX Collections intersection Module Integration Tests', () => {
         let query = "RETURN flex.coll.intersection([1, 2], [1, 2]) AS inter";
         let result = await graph.query(query);
         expect(result.data[0]['inter']).toEqual([1, 2]);
+        expect(collectionsModule.intersection([1, 2], [1, 2])).toEqual([1, 2]);
 
         query = "RETURN flex.coll.intersection([1, 2], [2, 3]) AS inter";
         result = await graph.query(query);
         expect(result.data[0]['inter']).toEqual([2]);
+        expect(collectionsModule.intersection([1, 2], [2, 3])).toEqual([2]);
 
         query = "RETURN flex.coll.intersection([1, 2], [3, 4]) AS inter";
         result = await graph.query(query);
         expect(result.data[0]['inter']).toEqual([]);
+        expect(collectionsModule.intersection([1, 2], [3, 4])).toEqual([]);
 
         query = "RETURN flex.coll.intersection([1, 2], []) AS inter";
         result = await graph.query(query);
         expect(result.data[0]['inter']).toEqual([]);
+        expect(collectionsModule.intersection([1, 2], [])).toEqual([]);
 
         query = "RETURN flex.coll.intersection([], [1, 2]) AS inter";
         result = await graph.query(query);
         expect(result.data[0]['inter']).toEqual([]);
+        expect(collectionsModule.intersection([], [1, 2])).toEqual([]);
 
         query = "RETURN flex.coll.intersection([], []) AS inter";
         result = await graph.query(query);
         expect(result.data[0]['inter']).toEqual([]);
+        expect(collectionsModule.intersection([], [])).toEqual([]);
     });
 });

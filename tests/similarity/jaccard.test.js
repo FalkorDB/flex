@@ -23,6 +23,11 @@ describe('FLEX Jaccard Integration Tests', () => {
     });
 
     test('flex.sim.jaccard', async () => {
++		// Ensure a clean slate for this test so that repeated runs don't
++		// accumulate `Person` nodes and change the result ordering.
++		await graph.query(`MATCH (p:Person)-[r]-() DELETE r`);
++		await graph.query(`MATCH (p:Person) DELETE p`);
++
 		await graph.query(`CREATE
 		(eve:Person   {name: 'Eve'}),
 		(bob:Person   {name: 'Bob'}),

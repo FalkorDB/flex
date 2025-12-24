@@ -7,9 +7,9 @@
  * @returns {Date|null}
  */
 function truncate(datetime, unit) {
-    var d0 = _flex_normalizeDate(datetime);
+    const d0 = _flex_normalizeDate(datetime);
     if (!d0) return null;
-    var d = new Date(d0.getTime());
+    const d = new Date(d0.getTime());
 
     switch (unit) {
         case 'minute':
@@ -23,8 +23,8 @@ function truncate(datetime, unit) {
             break;
         case 'week': {
             // Truncate to Monday 00:00:00.000 in UTC
-            var day = d.getUTCDay(); // 0=Sun..6=Sat
-            var diff = (day + 6) % 7; // days since Monday
+            const day = d.getUTCDay(); // 0=Sun..6=Sat
+            const diff = (day + 6) % 7; // days since Monday
             d.setUTCDate(d.getUTCDate() - diff);
             d.setUTCHours(0, 0, 0, 0);
             break;
@@ -34,8 +34,8 @@ function truncate(datetime, unit) {
             d.setUTCHours(0, 0, 0, 0);
             break;
         case 'quarter': {
-            var month = d.getUTCMonth();
-            var qStart = Math.floor(month / 3) * 3;
+            const month = d.getUTCMonth();
+            const qStart = Math.floor(month / 3) * 3;
             d.setUTCMonth(qStart, 1);
             d.setUTCHours(0, 0, 0, 0);
             break;
@@ -58,13 +58,13 @@ function _flex_normalizeDate(value) {
         return value;
     }
     if (typeof value === 'number') {
-        var d = new Date(value);
+        const d = new Date(value);
         return isNaN(d.getTime()) ? null : d;
     }
     if (value == null) {
         return null;
     }
-    var d2 = new Date(String(value));
+    const d2 = new Date(String(value));
     return isNaN(d2.getTime()) ? null : d2;
 }
 

@@ -8,15 +8,15 @@
  * @returns {Date|null}
  */
 function toTimeZone(datetime, tz) {
-    var d0 = _flex_normalizeDate(datetime);
+    const d0 = _flex_normalizeDate(datetime);
     if (!d0) return null;
 
-    var offsetMinutes = _flex_parseTzOffsetMinutes(tz);
+    const offsetMinutes = _flex_parseTzOffsetMinutes(tz);
     if (offsetMinutes === null) {
         return d0;
     }
 
-    var millis = d0.getTime() + offsetMinutes * 60000;
+    const millis = d0.getTime() + offsetMinutes * 60000;
     return new Date(millis);
 }
 
@@ -26,23 +26,23 @@ function _flex_normalizeDate(value) {
         return value;
     }
     if (typeof value === 'number') {
-        var d = new Date(value);
+        const d = new Date(value);
         return isNaN(d.getTime()) ? null : d;
     }
     if (value == null) {
         return null;
     }
-    var d2 = new Date(String(value));
+    const d2 = new Date(String(value));
     return isNaN(d2.getTime()) ? null : d2;
 }
 
 function _flex_parseTzOffsetMinutes(tz) {
     if (typeof tz !== 'string') return null;
-    var m = /^([+-])(\d{2}):?(\d{2})?$/.exec(tz);
+    const m = /^([+-])(\d{2}):?(\d{2})?$/.exec(tz);
     if (!m) return null;
-    var sign = m[1] === '-' ? -1 : 1;
-    var hours = Number(m[2]);
-    var mins = m[3] ? Number(m[3]) : 0;
+    const sign = m[1] === '-' ? -1 : 1;
+    const hours = Number(m[2]);
+    const mins = m[3] ? Number(m[3]) : 0;
     return sign * (hours * 60 + mins);
 }
 

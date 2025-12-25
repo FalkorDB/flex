@@ -34,7 +34,8 @@ function parseVersion(version) {
   // Remove 'v' prefix if present
   const cleanVersion = version.replace(/^v/, '');
   
-  const match = cleanVersion.match(/^(\d+)\.(\d+)\.(\d+)(-.*)?$/);
+  // Match semantic version with optional prerelease (alphanumeric + hyphens/dots only)
+  const match = cleanVersion.match(/^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/);
   if (!match) {
     throw new Error(`Invalid version format: ${version}`);
   }
@@ -74,10 +75,11 @@ function compareVersions(v1, v2) {
  */
 function getExistingTags() {
   try {
-    const output = execSync('git tag -l', { encoding: 'utf8' });
+    const output = execSync('git tag --list', { encoding: 'utf8' });
     return output.trim().split('\n').filter(tag => tag.length > 0);
   } catch (error) {
-    console.warn(`${colors.yellow}Warning: Could not fetch git tags. Assuming no previous releases.${colors.reset}`);
+    console.warn(`${colors.yellow}Warning: Could not fetch git tags: ${error.message}${colors.reset}`);
+    console.warn(`${colors.yellow}Assuming no previous releases.${colors.reset}`);
     return [];
   }
 }
@@ -175,7 +177,7 @@ function validateVersion() {
         }
       } catch (error) {
         // Skip tags that don't follow semantic versioning
-        console.warn(`${colors.yellow}Warning: Skipping non-semver tag: ${tag}${colors.reset}`);
+        console.warn(`${colors.yellow}Warning: Skipping non-semver tag '${tag}': ${error.message}${colors.reset}`);
       }
     }
     

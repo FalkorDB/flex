@@ -91,20 +91,42 @@ RETURN flex.map.submap(m, ['id','name'])      AS core,
        flex.json.toJson(m)                    AS raw_json;
 ```
 
-🛠️ Building & Contributing
+## 📖 Documentation
+
+Complete documentation for all FLEX functions is available in the [docs/](./docs) directory.
+
+- **[Function Reference](./docs/README.md)** - Complete index of all 41+ functions
+- **[Standard Template](./docs/TEMPLATE.md)** - Documentation format for contributors
+
+Each function is documented with:
+- Clear description and syntax
+- Parameter details and return types
+- Practical examples with output
+- Edge cases and notes
+- Related function references
+
+Browse by category:
+- [Similarity Functions](./docs/README.md#similarity-functions-flexsim) - Fuzzy matching and distance metrics
+- [Text Functions](./docs/README.md#text-functions-flextext) - String manipulation and formatting
+- [Collection Functions](./docs/README.md#collection-functions-flexcoll) - List and set operations
+- [Map Functions](./docs/README.md#map-functions-flexmap) - Object manipulation
+- [JSON Functions](./docs/README.md#json-functions-flexjson) - Serialization and parsing
+- [Date Functions](./docs/README.md#date-functions-flexdate) - Date/time manipulation
+- [Bitwise Functions](./docs/README.md#bitwise-functions-flexbitwise) - Low-level bit operations
+
+## 🛠️ Building & Contributing
+
 We welcome contributions! FLEX is designed to be easily extensible.
 
-Prerequisites
-Node.js (for testing)
+### Prerequisites
+- Node.js (for testing)
+- FalkorDB instance (Docker container recommended)
 
-FalkorDB instance (Docker container recommended)
-
-Adding a New Function
-Create a new JS file in src/ or add to an existing module.
-
-Implement your function in standard JavaScript.
-
-Add a test case in tests/.
+### Adding a New Function
+1. Create a new JS file in `src/` or add to an existing module
+2. Implement your function in standard JavaScript
+3. Add a test case in `tests/`
+4. **Document your function** following the [standard template](./docs/TEMPLATE.md)
 
 ```javascript
 // src/math.js example

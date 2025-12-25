@@ -2,12 +2,16 @@
  * Format a date/time value using a simple token-based pattern.
  * Supported tokens: YYYY, MM, DD, HH, mm, ss, SSS, [Z].
  *
+ * NOTE: We intentionally name this function `dateFormat` (not just
+ * `format`) to avoid collisions with other modules like `text/format.js`
+ * once all sources are concatenated into a single FLEX bundle.
+ *
  * @param {Date|number|string|null} datetime
  * @param {string|null} pattern
  * @param {string|null} tz offset like "+02:00" (optional)
  * @returns {string|null}
  */
-function format(datetime, pattern, tz) {
+function dateFormat(datetime, pattern, tz) {
     let d = _flex_normalizeDate(datetime);
     if (!d) return null;
 
@@ -75,4 +79,4 @@ function _flex_parseTzOffsetMinutes(tz) {
     return sign * (hours * 60 + mins);
 }
 
-falkor.register('date.format', format);
+falkor.register('date.format', dateFormat);

@@ -19,7 +19,17 @@ FLEX bridges the gap between basic graph queries and complex real-world applicat
 
 FLEX is a collection of User Defined Functions (UDFs). You can load the entire library into your FalkorDB instance using the standard `GRAPH.UDF LOAD` command via `redis-cli` or any FalkorDB client.
 
-### Using the CLI Loader
+### Option 1: Using npm (Recommended)
+
+```bash
+# Install from npm
+npm install @falkordb/flex
+
+# Load into your FalkorDB instance
+redis-cli -h<host> -p<port> GRAPH.UDF LOAD flex "$(cat node_modules/@falkordb/flex/dist/flex.js)"
+```
+
+### Option 2: Using the CLI Loader from Source
 
 ```bash
 # Clone the repository
@@ -31,6 +41,14 @@ npm run build
 
 # Load into your FalkorDB instance
 redis-cli -h<host> -p<port> GRAPH.UDF LOAD flex "$(cat dist/flex.js)"
+```
+
+### Option 3: Download from GitHub Releases
+
+Download the latest `flex.js` from the [Releases page](https://github.com/FalkorDB/flex/releases) and load it directly:
+
+```bash
+redis-cli -h<host> -p<port> GRAPH.UDF LOAD flex "$(cat flex.js)"
 ```
 
 📚 Function Categories
@@ -134,6 +152,24 @@ exports.square = function(x) {
     return x * x;
 };
 ```
+
+### Building the Library
+
+```bash
+npm run build
+```
+
+This generates `dist/flex.js` which bundles all functions from the `src/` directory.
+
+### Running Tests
+
+```bash
+npm test
+```
+
+### Releasing a New Version
+
+See [RELEASE.md](./RELEASE.md) for detailed instructions on creating and publishing releases.
 
 📄 License
 This project is licensed under the MIT License - see the LICENSE file for details.

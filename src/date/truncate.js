@@ -75,6 +75,7 @@ falkor.register('date.truncate', truncate);
 // istanbul ignore next
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
-        truncate
+        truncate,
+        _flex_normalizeDate,
     };
 }

@@ -86,6 +86,11 @@ falkor.register('date.format', dateFormat);
 // istanbul ignore next
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
-        format: dateFormat
+        // Public API shape used by docs/tests
+        format: dateFormat,
+        // Extra exports useful for unit tests
+        dateFormat,
+        _flex_normalizeDate,
+        _flex_parseTzOffsetMinutes,
     };
 }

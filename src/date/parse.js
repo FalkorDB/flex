@@ -69,6 +69,7 @@ falkor.register('date.parse', parse);
 // istanbul ignore next
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
-        parse
+        parse,
+        _flex_parseTzOffsetMinutes,
     };
 }

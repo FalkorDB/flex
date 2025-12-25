@@ -53,6 +53,8 @@ falkor.register('date.toTimeZone', toTimeZone);
 // istanbul ignore next
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
-        toTimeZone
+        toTimeZone,
+        _flex_normalizeDate,
+        _flex_parseTzOffsetMinutes,
     };
 }

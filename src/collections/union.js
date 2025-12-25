@@ -2,6 +2,13 @@
  * Copyright FalkorDB Ltd. 2023 - present
  */
 
+/**
+ * Return the union of two arrays
+ *
+ * @param {Array} a
+ * @param {Array} b
+ * @returns {Array}
+ */
 function union (a, b) {
   return [...new Set([...a, ...b])];
 }

@@ -2,6 +2,13 @@
  * Copyright FalkorDB Ltd. 2023 - present
  */
 
+/**
+ * Repeat a string a specified number of times
+ *
+ * @param {string|null} item
+ * @param {number} count
+ * @returns {string|null}
+ */
 // multiply the given string with the given count
 function repeat (item, count) {
 	if (item === null) return null;

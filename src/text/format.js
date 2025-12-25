@@ -2,6 +2,13 @@
  * Copyright FalkorDB Ltd. 2023 - present
  */
 
+/**
+ * Format a string by replacing {0}, {1}, etc. with provided parameters
+ *
+ * @param {string|null} str
+ * @param {Array} params
+ * @returns {string|null}
+ */
 // sprintf format the string (Basic implementation)
 function format(str, params) {
 	if (str === null) return null;

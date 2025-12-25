@@ -2,6 +2,13 @@
  * Copyright FalkorDB Ltd. 2023 - present
  */
 
+/**
+ * Return the intersection of two arrays
+ *
+ * @param {Array} a
+ * @param {Array} b
+ * @returns {Array}
+ */
 function intersection (a, b) {
   const setB = new Set(b);
   return a.filter(x => setB.has(x));

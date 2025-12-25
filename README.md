@@ -75,7 +75,7 @@ Clean messy input data during ingestion.
 UNWIND $events AS event
 CREATE (e:Event {
     name: flex.text.camelCase(event.raw_name),
-    tags: flex.coll.union(event.tags, []), // Remove duplicates
+    tags: flex.coll.union(event.tags, []), // Union with empty array removes duplicates
     timestamp: flex.date.parse(event.date_str, "YYYY-MM-DD")
 })
 ```

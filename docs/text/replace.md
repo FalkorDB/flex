@@ -64,7 +64,7 @@ RETURN flex.text.replace(text, '\\s+', ' ') AS normalized
 ```
 normalized
 -------------------------
- Multiple spaces here 
+ Multiple spaces here
 ```
 
 ## Notes

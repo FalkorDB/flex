@@ -36,7 +36,7 @@ date
 
 ### Example 2: Parse DateTime
 ```cypher
-RETURN flex.date.parse('2024-03-15 14:30:00', 'YYYY-MM-DDTHH:mm:ss') AS datetime
+RETURN flex.date.parse('2024-03-15T14:30:00', 'YYYY-MM-DDTHH:mm:ss') AS datetime
 ```
 
 ### Example 3: Auto-detect ISO Format

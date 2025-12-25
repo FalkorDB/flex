@@ -25,6 +25,11 @@ const colors = {
   reset: '\x1b[0m'
 };
 
+// Semantic version regex pattern
+// Matches: MAJOR.MINOR.PATCH[-PRERELEASE]
+// PRERELEASE format: alphanumeric identifiers separated by dots (e.g., alpha.1, beta-rc.2)
+const SEMVER_REGEX = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/;
+
 /**
  * Parse a semantic version string into components
  * @param {string} version - Version string (e.g., "1.0.0" or "v1.0.0")
@@ -34,8 +39,7 @@ function parseVersion(version) {
   // Remove 'v' prefix if present
   const cleanVersion = version.replace(/^v/, '');
   
-  // Match semantic version with optional prerelease (alphanumeric + hyphens/dots only)
-  const match = cleanVersion.match(/^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/);
+  const match = cleanVersion.match(SEMVER_REGEX);
   if (!match) {
     throw new Error(`Invalid version format: ${version}`);
   }
@@ -75,7 +79,10 @@ function compareVersions(v1, v2) {
  */
 function getExistingTags() {
   try {
-    const output = execSync('git tag --list', { encoding: 'utf8' });
+    const output = execSync('git tag --list', { 
+      encoding: 'utf8',
+      timeout: 10000 // 10 second timeout
+    });
     return output.trim().split('\n').filter(tag => tag.length > 0);
   } catch (error) {
     console.warn(`${colors.yellow}Warning: Could not fetch git tags: ${error.message}${colors.reset}`);
@@ -101,14 +108,14 @@ function validateVersion() {
   console.log('🔍 FLEX Version Validation');
   console.log(`${'='.repeat(60)}\n`);
   
-  // Read package.json
-  const packageJsonPath = path.join(__dirname, '..', '..', 'package.json');
+  // Read package.json - using process.cwd() to ensure we read from the repository root
+  const packageJsonPath = path.join(process.cwd(), 'package.json');
   let packageJson;
   
   try {
     packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
   } catch (error) {
-    console.error(`${colors.red}Error: Could not read package.json${colors.reset}`);
+    console.error(`${colors.red}Error: Could not read package.json at ${packageJsonPath}${colors.reset}`);
     console.error(error.message);
     process.exit(1);
   }

@@ -23,48 +23,30 @@ describe('FLEX Jaccard Integration Tests', () => {
     });
 
     test('flex.sim.jaccard', async () => {
-+		// Ensure a clean slate for this test so that repeated runs don't
-+		// accumulate `Person` nodes and change the result ordering.
-+		await graph.query(`MATCH (p:Person)-[r]-() DELETE r`);
-+		await graph.query(`MATCH (p:Person) DELETE p`);
-+
-		await graph.query(`CREATE
-		(eve:Person   {name: 'Eve'}),
-		(bob:Person   {name: 'Bob'}),
-		(dave:Person  {name: 'Dave'}),
-		(carol:Person {name: 'Carol'}),
-		(alice:Person {name: 'Alice'}),
-		(eve)-[:FRIEND]->(bob),
-		(bob)-[:FRIEND]->(alice),
-		(bob)-[:FRIEND]->(carol),
-		(bob)-[:FRIEND]->(eve),
-		(dave)-[:FRIEND]->(alice),
-		(carol)-[:FRIEND]->(alice),
-		(carol)-[:FRIEND]->(bob),
-		(alice)-[:FRIEND]->(bob),
-		(alice)-[:FRIEND]->(carol),
-		(alice)-[:FRIEND]->(dave)`)
+		// Test with simple collections/arrays
+		const q1 = `RETURN flex.sim.jaccard([1, 2, 3], [2, 3, 4]) AS sim`
+        const result1 = await graph.query(q1);
+        expect(result1.data[0]['sim']).toBe(0.5); // 2 common / 4 total unique
 
-		const q = `MATCH (alice:Person {name: 'Alice'}), (n)
-				   RETURN n.name AS name, flex.sim.jaccard(alice, n) AS sim
-				   ORDER BY n.name`
+		// Test with identical sets
+		const q2 = `RETURN flex.sim.jaccard([1, 2, 3], [1, 2, 3]) AS sim`
+        const result2 = await graph.query(q2);
+        expect(result2.data[0]['sim']).toBe(1); // identical sets
 
-        const result = await graph.query(q);
+		// Test with no overlap
+		const q3 = `RETURN flex.sim.jaccard([1, 2], [3, 4]) AS sim`
+        const result3 = await graph.query(q3);
+        expect(result3.data[0]['sim']).toBe(0); // no common elements
 
-        expect(result.data[0]['name']).toBe('Alice');
-        expect(result.data[0]['sim']).toBe(1);
+		// Test with empty sets
+		const q4 = `RETURN flex.sim.jaccard([], []) AS sim`
+        const result4 = await graph.query(q4);
+        expect(result4.data[0]['sim']).toBe(0); // both empty
 
-        expect(result.data[1]['name']).toBe('Bob');
-        expect(result.data[1]['sim']).toBe(0.2);
-
-        expect(result.data[2]['name']).toBe('Carol');
-        expect(result.data[2]['sim']).toBe(0.25);
-
-        expect(result.data[3]['name']).toBe('Dave');
-        expect(result.data[3]['sim']).toBe(0);
-
-        expect(result.data[4]['name']).toBe('Eve');
-        expect(result.data[4]['sim']).toBe(0.333333333333333);
+		// Test with string arrays
+		const q5 = `RETURN flex.sim.jaccard(['tag1', 'tag2', 'tag3'], ['tag2', 'tag3', 'tag4']) AS sim`
+        const result5 = await graph.query(q5);
+        expect(result5.data[0]['sim']).toBe(0.5); // 2 common / 4 total unique
     });
 });
 

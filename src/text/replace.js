@@ -2,6 +2,14 @@
  * Copyright FalkorDB Ltd. 2023 - present
  */
 
+/**
+ * Replace all substrings matching a regex pattern
+ *
+ * @param {string|null} str
+ * @param {string} regex
+ * @param {string} replacement
+ * @returns {string|null}
+ */
 // replace each substring matching regex
 function replace(str, regex, replacement) {
 	if (str === null) return null;

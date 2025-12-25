@@ -2,6 +2,13 @@
  * Copyright FalkorDB Ltd. 2023 - present
  */
 
+/**
+ * Compute Jaccard similarity coefficient between two nodes
+ *
+ * @param {Object} n - First node
+ * @param {Object} m - Second node
+ * @returns {number}
+ */
 function jaccard(n, m) {
     const nIds = n.getNeighbors().map(x => x.id);
     const mIds = m.getNeighbors().map(x => x.id);

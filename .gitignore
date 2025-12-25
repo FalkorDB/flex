@@ -2,7 +2,8 @@
 node_modules/
 
 # --- Build Artifacts ---
-# Note: dist/ is now committed to the repository for npm publishing
+# dist/ is uploaded as an artifact within each release
+dist/
 
 # --- Testing & Logs ---
 # Ignore Jest coverage reports

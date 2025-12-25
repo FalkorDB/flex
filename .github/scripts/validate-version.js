@@ -61,6 +61,7 @@ function parseVersion(version) {
  * @returns {number} - -1 if v1 < v2, 0 if equal, 1 if v1 > v2
  */
 function compareVersions(v1, v2) {
+  // Compare major, minor, and patch versions
   if (v1.major !== v2.major) {
     return v1.major > v2.major ? 1 : -1;
   }
@@ -70,6 +71,21 @@ function compareVersions(v1, v2) {
   if (v1.patch !== v2.patch) {
     return v1.patch > v2.patch ? 1 : -1;
   }
+  
+  // If major.minor.patch are equal, handle prerelease versions
+  // Per semver spec: 1.0.0-alpha < 1.0.0 (prerelease has lower precedence)
+  if (v1.prerelease && !v2.prerelease) {
+    return -1; // v1 is a prerelease, v2 is stable -> v1 < v2
+  }
+  if (!v1.prerelease && v2.prerelease) {
+    return 1; // v1 is stable, v2 is a prerelease -> v1 > v2
+  }
+  if (v1.prerelease && v2.prerelease) {
+    // Both are prereleases, compare lexicographically
+    if (v1.prerelease < v2.prerelease) return -1;
+    if (v1.prerelease > v2.prerelease) return 1;
+  }
+  
   return 0;
 }
 
@@ -79,7 +95,7 @@ function compareVersions(v1, v2) {
  */
 function getExistingTags() {
   try {
-    const output = execSync('git tag --list', { 
+    const output = execSync('git tag', { 
       encoding: 'utf8',
       timeout: 10000 // 10 second timeout
     });
@@ -194,9 +210,15 @@ function validateVersion() {
       
       const comparison = compareVersions(tagVersion, maxVersion);
       
-      if (comparison <= 0) {
+      if (comparison === 0) {
+        // This should have been caught earlier by duplicate tag check, but handle it here too
         console.error(`\n${colors.red}❌ VALIDATION FAILED${colors.reset}`);
-        console.error(`\nNew version ${tagVersion.clean} is not greater than the latest released version ${maxVersion.clean}`);
+        console.error(`\nNew version ${tagVersion.clean} is equal to the latest released version`);
+        console.error(`\nPlease use a version number greater than ${maxVersion.clean}`);
+        process.exit(1);
+      } else if (comparison < 0) {
+        console.error(`\n${colors.red}❌ VALIDATION FAILED${colors.reset}`);
+        console.error(`\nNew version ${tagVersion.clean} is less than the latest released version ${maxVersion.clean}`);
         console.error(`\nPlease use a version number greater than ${maxVersion.clean}`);
         process.exit(1);
       }

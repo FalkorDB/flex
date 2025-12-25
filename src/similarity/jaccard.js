@@ -15,8 +15,13 @@ function jaccard(a, b) {
         return null;
     }
 
-    const unionSize = union(a, b).length;
-    const intersectionSize = intersection(a, b).length;
+    // Compute union and intersection inline
+    const unionArray = [...new Set([...a, ...b])];
+    const setB = new Set(b);
+    const intersectionArray = a.filter(x => setB.has(x));
+
+    const unionSize = unionArray.length;
+    const intersectionSize = intersectionArray.length;
 
     return unionSize === 0 ? 0 : intersectionSize / unionSize;
 }

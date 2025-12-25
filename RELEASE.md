@@ -10,26 +10,37 @@ FLEX uses automated GitHub Actions workflows to build and publish releases. When
 
 Before creating a release, ensure:
 
-1. All tests pass locally: `npm test`
-2. The build succeeds: `npm run build`
-3. The `dist/flex.js` file is up to date and committed to the repository
-4. All changes are merged to the `main` branch
+1. **Update the version in `package.json`** to match the release tag you plan to create (e.g., if creating tag `v1.0.1`, set version to `1.0.1`)
+2. All tests pass locally: `npm test`
+3. The build succeeds: `npm run build`
+4. The `dist/flex.js` file is up to date and committed to the repository
+5. All changes are merged to the `main` branch
+
+**Important**: The release tag version **must** match the version in `package.json` and must be greater than all previously released versions. The automated workflow will validate this and fail if the versions don't match or if the new version is not greater than existing releases.
 
 ## Release Steps
 
 ### Creating a GitHub Release
 
-1. Go to the [Releases page](https://github.com/FalkorDB/flex/releases)
-2. Click "Draft a new release"
-3. Click "Choose a tag" and create a new tag (e.g., `v1.0.1`)
-4. Fill in the release title (e.g., "FLEX v1.0.1")
-5. Write a description of changes included in this release
-6. Click "Publish release"
+**Important**: Before creating a release, update the version in `package.json` to match your intended release tag.
+
+1. **Update `package.json`**: Change the version field to your new version (e.g., `1.0.1` for tag `v1.0.1`)
+2. Commit and push the version change to the `main` branch
+3. Go to the [Releases page](https://github.com/FalkorDB/flex/releases)
+4. Click "Draft a new release"
+5. Click "Choose a tag" and create a new tag matching the `package.json` version (e.g., `v1.0.1`)
+6. Fill in the release title (e.g., "FLEX v1.0.1")
+7. Write a description of changes included in this release
+8. Click "Publish release"
 
 The GitHub Actions workflow will automatically:
+- Validate that the release tag version matches `package.json` version
+- Validate that the new version is greater than all previous releases
 - Build the FLEX bundle from source
 - Run all tests to ensure quality
 - Attach the compiled `flex.js` file to the release
+
+If validation fails, the release will be aborted with an error message explaining the issue.
 
 ### Alternative: Command Line Tag and Manual Release
 
@@ -38,7 +49,15 @@ The GitHub Actions workflow will automatically:
 git checkout main
 git pull
 
-# Create and push a new version tag
+# Update package.json version (e.g., to 1.0.1)
+# Edit package.json and change the "version" field
+
+# Commit the version change
+git add package.json
+git commit -m "Bump version to 1.0.1"
+git push
+
+# Create and push a new version tag (matching package.json version)
 git tag -a v1.0.1 -m "Release version 1.0.1"
 git push origin v1.0.1
 
@@ -55,7 +74,16 @@ FLEX follows [Semantic Versioning](https://semver.org/):
 - **MINOR** (v1.1.0): New functionality, backward compatible
 - **PATCH** (v1.0.1): Bug fixes, backward compatible
 
-Update the version in `package.json` before creating a release.
+**Always update the version in `package.json` before creating a release.** The version in `package.json` must match the release tag (without the 'v' prefix), and must be greater than all previous releases.
+
+### Version Validation
+
+The release workflow automatically validates:
+1. The release tag version matches the `package.json` version (e.g., tag `v1.0.1` must match `package.json` version `1.0.1`)
+2. The new version is greater than all previously released versions
+3. The tag doesn't already exist
+
+If any validation fails, the release workflow will fail with a descriptive error message.
 
 ## Using a Published Release
 

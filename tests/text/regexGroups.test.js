@@ -3,6 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
+const regexGroupsModule = require('../../src/text/regexGroups');
 
 describe('FLEX text.regexGroups Integration Tests', () => {
     let db, graph;
@@ -25,5 +26,7 @@ describe('FLEX text.regexGroups Integration Tests', () => {
         // Returns nested arrays for matches
         let res = await graph.query("RETURN flex.text.regexGroups('a1 b2', '(\\w)(\\d)') AS res");
         expect(res.data[0]['res']).toEqual([["a1", "a", "1"], ["b2", "b", "2"]]);
+
+        expect(regexGroupsModule.regexGroups('a1 b2', '(\\w)(\\d)')).toEqual([["a1", "a", "1"], ["b2", "b", "2"]]);
     });
 });

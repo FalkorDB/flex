@@ -3,6 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
+const indexOfModule = require('../../src/text/indexOf');
 
 describe('FLEX text.indexOf Integration Tests', () => {
     let db, graph;
@@ -29,6 +30,10 @@ describe('FLEX text.indexOf Integration Tests', () => {
         const q2 = "RETURN flex.text.indexesOf('hello world', 'o') AS res";
         const r2 = await graph.query(q2);
         expect(r2.data[0]['res']).toEqual([4, 7]);
+
+        // Test local module
+        expect(indexOfModule.indexOf('hello world', 'o')).toBe(4);
+        expect(indexOfModule.indexesOf('hello world', 'o')).toEqual([4, 7]);
     });
 });
 

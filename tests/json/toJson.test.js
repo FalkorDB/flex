@@ -1,4 +1,5 @@
 const { initializeFLEX } = require('../setup');
+const toJsonModule = require('../../src/json/toJson');
 
 describe('FLEX json.toJson Integration Tests', () => {
     let db, graph;
@@ -21,6 +22,8 @@ describe('FLEX json.toJson Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['j']).toBe('{"a":1,"b":"x"}');
+
+        expect(toJsonModule.toJson({a: 1, b: "x"})).toBe('{"a":1,"b":"x"}');
     });
 
     test('flex.json.toJson serializes arrays', async () => {
@@ -29,6 +32,8 @@ describe('FLEX json.toJson Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['j']).toBe('[1,2,3]');
+
+        expect(toJsonModule.toJson([1, 2, 3])).toBe('[1,2,3]');
     });
 
     test('flex.json.toJson normalizes undefined to null', async () => {
@@ -38,5 +43,7 @@ describe('FLEX json.toJson Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['j']).toBe('null');
+
+        expect(toJsonModule.toJson(null)).toBe('null');
     });
 });

@@ -1,4 +1,5 @@
 const { initializeFLEX } = require('../setup');
+const fromJsonListModule = require('../../src/json/fromJsonList');
 
 describe('FLEX json.fromJsonList Integration Tests', () => {
     let db, graph;
@@ -21,6 +22,8 @@ describe('FLEX json.fromJsonList Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['lst']).toEqual([1, 2, 3]);
+
+        expect(fromJsonListModule.fromJsonList('[1,2,3]')).toEqual([1, 2, 3]);
     });
 
     test('flex.json.fromJsonList returns empty list for non-array JSON', async () => {
@@ -29,6 +32,8 @@ describe('FLEX json.fromJsonList Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['lst']).toEqual([]);
+
+        expect(fromJsonListModule.fromJsonList('{"a":1}')).toEqual([]);
     });
 
     test('flex.json.fromJsonList returns empty list for invalid JSON', async () => {
@@ -37,6 +42,8 @@ describe('FLEX json.fromJsonList Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['lst']).toEqual([]);
+
+        expect(fromJsonListModule.fromJsonList('not json')).toEqual([]);
     });
 
     test('flex.json.fromJsonList returns empty list for non-string input', async () => {
@@ -45,5 +52,7 @@ describe('FLEX json.fromJsonList Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['lst']).toEqual([]);
+
+        expect(fromJsonListModule.fromJsonList(null)).toEqual([]);
     });
 });

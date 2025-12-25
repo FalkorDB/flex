@@ -3,6 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
+const caseModule = require('../../src/text/case');
 
 describe('FLEX Case Integration Tests', () => {
     let db, graph;
@@ -36,6 +37,14 @@ describe('FLEX Case Integration Tests', () => {
             const res = await graph.query(`RETURN flex.text.${fn} AS res`);
 			expect(res.data[0]['res']).toBe(expected);
         }
+
+        // Test local module
+        expect(caseModule.capitalize('node')).toBe('Node');
+        expect(caseModule.decapitalize('Node')).toBe('node');
+        expect(caseModule.swapCase('aBc')).toBe('AbC');
+        expect(caseModule.camelCase('foo bar')).toBe('fooBar');
+        expect(caseModule.upperCamelCase('foo bar')).toBe('FooBar');
+        expect(caseModule.snakeCase('FooBar')).toBe('foo_bar');
     });
 });
 

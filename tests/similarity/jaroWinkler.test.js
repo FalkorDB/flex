@@ -3,6 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
+const jaroWinklerModule = require('../../src/similarity/jaroWinkler');
 
 describe('FLEX Jaro-Winkler Integration Tests', () => {
     let db, graph;
@@ -44,6 +45,13 @@ describe('FLEX Jaro-Winkler Integration Tests', () => {
         expect(result.data[2]).toEqual({'a': 'MARTHA',    'b': 'MARHTA',     'sim': 0.961111111111111});
         expect(result.data[3]).toEqual({'a': 'abc',       'b': 'xyz',        'sim': 0.0});
         expect(result.data[4]).toEqual({'a': 'same',      'b': 'same',       'sim': 1.0});
+
+        // Test local module
+        expect(jaroWinklerModule.jaroWinkler('DIXON',     'DICKSONX')).toBeCloseTo(0.813333333333333, 10);
+        expect(jaroWinklerModule.jaroWinkler('JELLYFISH', 'SMELLYFISH')).toBeCloseTo(0.896296296296296, 10);
+        expect(jaroWinklerModule.jaroWinkler('MARTHA',    'MARHTA')).toBeCloseTo(0.961111111111111, 10);
+        expect(jaroWinklerModule.jaroWinkler('abc',       'xyz')).toBe(0.0);
+        expect(jaroWinklerModule.jaroWinkler('same',      'same')).toBe(1.0);
     });
 
     test('flex.sim.jaroWinkler handles nulls', async () => {
@@ -59,6 +67,10 @@ describe('FLEX Jaro-Winkler Integration Tests', () => {
         expect(result.data[0]['d1']).toBe(0.0);
         expect(result.data[0]['d2']).toBe(0.0);
         expect(result.data[0]['d3']).toBe(1.0);
+
+        expect(jaroWinklerModule.jaroWinkler(null, 'abc')).toBe(0.0);
+        expect(jaroWinklerModule.jaroWinkler('abc', null)).toBe(0.0);
+        expect(jaroWinklerModule.jaroWinkler(null, null)).toBe(1.0);
     });
 
     test('flex.sim.jaroWinkler symmetry', async () => {
@@ -71,6 +83,8 @@ describe('FLEX Jaro-Winkler Integration Tests', () => {
         const result = await graph.query(q);
 
         expect(result.data[0]['d1']).toBe(result.data[0]['d2']);
+
+        expect(jaroWinklerModule.jaroWinkler('distance', 'editing')).toBe(jaroWinklerModule.jaroWinkler('editing', 'distance'));
     });
 });
 

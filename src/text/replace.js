@@ -2,6 +2,14 @@
  * Copyright FalkorDB Ltd. 2023 - present
  */
 
+/**
+ * Replace all substrings matching a regex pattern
+ *
+ * @param {string|null} str
+ * @param {string} regex
+ * @param {string} replacement
+ * @returns {string|null}
+ */
 // replace each substring matching regex
 function replace(str, regex, replacement) {
 	if (str === null) return null;
@@ -9,4 +17,13 @@ function replace(str, regex, replacement) {
 	return str.replace(re, replacement);
 }
 
-falkor.register('text.replace', replace) ;
+falkor.register('text.replace', replace);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        replace
+    };
+}

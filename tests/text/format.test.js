@@ -3,6 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
+const formatModule = require('../../src/text/format');
 
 describe('FLEX text.format Integration Tests', () => {
     let db, graph;
@@ -24,6 +25,8 @@ describe('FLEX text.format Integration Tests', () => {
 	test('flex.text.format', async () => {
 		let res = await graph.query("RETURN flex.text.format('Hello {0}', ['World']) AS res");
         expect(res.data[0]['res']).toBe('Hello World');
+
+        expect(formatModule.format('Hello {0}', ['World'])).toBe('Hello World');
     });
 });
 

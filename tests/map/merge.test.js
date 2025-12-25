@@ -1,4 +1,5 @@
 const { initializeFLEX } = require('../setup');
+const mergeModule = require('../../src/map/merge');
 
 describe('FLEX map.merge Integration Tests', () => {
     let db, graph;
@@ -21,6 +22,8 @@ describe('FLEX map.merge Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['m']).toEqual({ a: 1, b: 3, c: 4 });
+
+        expect(mergeModule.merge({a: 1, b: 2}, {b: 3, c: 4})).toEqual({ a: 1, b: 3, c: 4 });
     });
 
     test('flex.map.merge ignores non-object inputs', async () => {
@@ -29,5 +32,7 @@ describe('FLEX map.merge Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['m']).toEqual({ a: 1 });
+
+        expect(mergeModule.merge({a: 1}, null, 42, ['x'])).toEqual({ a: 1 });
     });
 });

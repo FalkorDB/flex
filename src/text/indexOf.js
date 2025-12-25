@@ -22,5 +22,15 @@ function indexesOf(str, lookup, from = 0, to = -1) {
 	return results;
 }
 
-falkor.register('text.indexOf', indexOf) ;
-falkor.register('text.indexesOf', indexesOf) ;
+falkor.register('text.indexOf', indexOf);
+falkor.register('text.indexesOf', indexesOf);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        indexOf,
+        indexesOf
+    };
+}

@@ -3,6 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
+const joinModule = require('../../src/text/join');
 
 describe('FLEX text.join Integration Tests', () => {
     let db, graph;
@@ -24,6 +25,8 @@ describe('FLEX text.join Integration Tests', () => {
 	test('String utility: join', async () => {
         let res = await graph.query("RETURN flex.text.join(['a', 'b'], '-') AS res");
         expect(res.data[0]['res']).toBe('a-b');
+
+        expect(joinModule.join(['a', 'b'], '-')).toBe('a-b');
     });
 });
 

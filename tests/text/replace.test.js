@@ -3,6 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
+const replaceModule = require('../../src/text/replace');
 
 describe('FLEX text.replace Integration Tests', () => {
     let db, graph;
@@ -24,6 +25,8 @@ describe('FLEX text.replace Integration Tests', () => {
 	test('Regex functions: replace', async () => {
         let res = await graph.query("RETURN flex.text.replace('abc-123', '[0-9]', 'X') AS res");
         expect(res.data[0]['res']).toBe('abc-XXX');
+
+        expect(replaceModule.replace('abc-123', '[0-9]', 'X')).toBe('abc-XXX');
     });
 });
 

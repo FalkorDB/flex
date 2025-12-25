@@ -1,4 +1,5 @@
 const { initializeFLEX } = require('../setup');
+const removeKeysModule = require('../../src/map/removeKeys');
 
 describe('FLEX map.removeKeys Integration Tests', () => {
     let db, graph;
@@ -21,6 +22,8 @@ describe('FLEX map.removeKeys Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['m']).toEqual({ a: 1, c: 3 });
+
+        expect(removeKeysModule.removeKeys({a: 1, b: 2, c: 3}, ['b'])).toEqual({ a: 1, c: 3 });
     });
 
     test('flex.map.removeKeys returns empty map for non-object input', async () => {
@@ -29,5 +32,7 @@ describe('FLEX map.removeKeys Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['m']).toEqual({});
+
+        expect(removeKeysModule.removeKeys(null, ['a'])).toEqual({});
     });
 });

@@ -3,6 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
+const fromPairsModule = require('../../src/map/fromPairs');
 
 describe('FLEX map.fromPairs Integration Tests', () => {
     let db, graph;
@@ -27,6 +28,8 @@ describe('FLEX map.fromPairs Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['m']).toEqual({ a: 1, b: 2, c: 3 });
+
+        expect(fromPairsModule.fromPairs([['a', 1], ['b', 2], ['c', 3]])).toEqual({ a: 1, b: 2, c: 3 });
     });
 
     test('flex.map.fromPairs handles duplicates', async () => {
@@ -35,6 +38,8 @@ describe('FLEX map.fromPairs Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['m']).toEqual({ x: 42, y: 20 });
+
+        expect(fromPairsModule.fromPairs([['x', 10], ['y', 20], ['x', 42]])).toEqual({ x: 42, y: 20 });
     });
 
     test('flex.map.fromPairs ignores invalid entries', async () => {
@@ -43,6 +48,8 @@ describe('FLEX map.fromPairs Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['m']).toEqual({ a: 1, c: 3 });
+
+        expect(fromPairsModule.fromPairs([['a', 1], ['b'], null, ['c', 3]])).toEqual({ a: 1, c: 3 });
     });
 
     test('flex.map.fromPairs null input returns empty map', async () => {
@@ -51,6 +58,8 @@ describe('FLEX map.fromPairs Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['m']).toEqual({});
+
+        expect(fromPairsModule.fromPairs(null)).toEqual({});
     });
 
     test('flex.map.fromPairs empty list returns empty map', async () => {
@@ -59,6 +68,8 @@ describe('FLEX map.fromPairs Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['m']).toEqual({});
+
+        expect(fromPairsModule.fromPairs([])).toEqual({});
     });
 });
 

@@ -15,3 +15,12 @@ function toJson(value) {
 }
 
 falkor.register('json.toJson', toJson);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        toJson
+    };
+}

@@ -82,3 +82,12 @@ function jaroWinkler(s1, s2) {
 }
 
 falkor.register("sim.jaroWinkler", jaroWinkler);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        jaroWinkler
+    };
+}

@@ -8,4 +8,13 @@ function join (arr, delimiter) {
 	return arr.join(delimiter);
 }
 
-falkor.register('text.join', join) ;
+falkor.register('text.join', join);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        join
+    };
+}

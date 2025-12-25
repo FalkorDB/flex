@@ -9,4 +9,13 @@ function replace(str, regex, replacement) {
 	return str.replace(re, replacement);
 }
 
-falkor.register('text.replace', replace) ;
+falkor.register('text.replace', replace);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        replace
+    };
+}

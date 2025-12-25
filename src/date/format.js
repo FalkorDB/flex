@@ -79,4 +79,13 @@ function _flex_parseTzOffsetMinutes(tz) {
     return sign * (hours * 60 + mins);
 }
 
-falkor.register('date.format', dateFormat);
+falkor.register('date.format', format);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        format
+    };
+}

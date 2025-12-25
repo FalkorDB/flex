@@ -13,3 +13,12 @@ function jaccard(n, m) {
 }
 
 falkor.register('sim.jaccard', jaccard);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        jaccard
+    };
+}

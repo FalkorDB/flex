@@ -14,9 +14,9 @@
  * @returns {Array}
  */
 function subtract(list, toRemove) {
-    if (!Array.isArray(list) || !Array.isArray(toRemove)) return [];
+    if (!Array.isArray(list)) return [];
 
-    if (toRemove.length === 0) return [...list];
+    if (!Array.isArray(toRemove) || toRemove.length === 0) return [...list];
 
     const removeSet = new Set(toRemove);
     return list.filter(item => !removeSet.has(item));

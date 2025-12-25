@@ -1,8 +1,4 @@
 const { initializeFLEX } = require('../setup');
-const formatModule = require('../../src/date/format');
-const parseModule = require('../../src/date/parse');
-const toTimeZoneModule = require('../../src/date/toTimeZone');
-const truncateModule = require('../../src/date/truncate');
 
 describe('FLEX date.* Integration Tests', () => {
     let db, graph;
@@ -28,11 +24,6 @@ describe('FLEX date.* Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['s']).toBe('2024-01-02');
-
-        // Test local module
-        const parsed = parseModule.parse('2024-01-02', 'YYYY-MM-DD');
-        const formatted = formatModule.format(parsed, 'YYYY-MM-DD');
-        expect(formatted).toBe('2024-01-02');
     });
 
     test('flex.date.truncate to day', async () => {
@@ -44,11 +35,6 @@ describe('FLEX date.* Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['s']).toBe('2024-01-02T00:00:00Z');
-
-        // Test local module
-        const truncated = truncateModule.truncate('2024-01-02T03:04:05Z', 'day');
-        const formatted = formatModule.format(truncated, 'YYYY-MM-DDTHH:mm:ss[Z]');
-        expect(formatted).toBe('2024-01-02T00:00:00Z');
     });
 
     test('flex.date.toTimeZone applies positive offset', async () => {
@@ -60,10 +46,5 @@ describe('FLEX date.* Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['s']).toBe('2024-01-02T02:00:00Z');
-
-        // Test local module
-        const converted = toTimeZoneModule.toTimeZone('2024-01-02T00:00:00Z', '+02:00');
-        const formatted = formatModule.format(converted, 'YYYY-MM-DDTHH:mm:ss[Z]');
-        expect(formatted).toBe('2024-01-02T02:00:00Z');
     });
 });

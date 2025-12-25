@@ -23,3 +23,12 @@ function merge() {
 }
 
 falkor.register('map.merge', merge);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        merge
+    };
+}

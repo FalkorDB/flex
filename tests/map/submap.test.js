@@ -1,4 +1,5 @@
 const { initializeFLEX } = require('../setup');
+const submapModule = require('../../src/map/submap');
 
 describe('FLEX map.submap Integration Tests', () => {
     let db, graph;
@@ -21,6 +22,8 @@ describe('FLEX map.submap Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['m']).toEqual({ a: 1, c: 3 });
+
+        expect(submapModule.submap({a: 1, b: 2, c: 3}, ['a','c','z'])).toEqual({ a: 1, c: 3 });
     });
 
     test('flex.map.submap returns empty map for invalid inputs', async () => {
@@ -29,5 +32,7 @@ describe('FLEX map.submap Integration Tests', () => {
         `;
         const result = await graph.query(q);
         expect(result.data[0]['m']).toEqual({});
+
+        expect(submapModule.submap(null, ['a'])).toEqual({});
     });
 });

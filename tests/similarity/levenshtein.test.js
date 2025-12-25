@@ -3,6 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
+const levenshteinModule = require('../../src/similarity/levenshtein');
 
 describe('FLEX Levenshtein Integration Tests', () => {
     let db, graph;
@@ -49,6 +50,15 @@ describe('FLEX Levenshtein Integration Tests', () => {
         expect(result.data[4]).toEqual({'a': 'gumbo',  'b': 'gambol',  'dist': 2});
         expect(result.data[5]).toEqual({'a': 'kitten', 'b': 'sitting', 'dist': 3});
         expect(result.data[6]).toEqual({'a': 'same',   'b': 'same',    'dist': 0});
+
+        // Test local module
+        expect(levenshteinModule.levenshtein('',       'abc')).toBe(3);
+        expect(levenshteinModule.levenshtein('abc',    '')).toBe(3);
+        expect(levenshteinModule.levenshtein('book',   'back')).toBe(2);
+        expect(levenshteinModule.levenshtein('flaw',   'lawn')).toBe(2);
+        expect(levenshteinModule.levenshtein('gumbo',  'gambol')).toBe(2);
+        expect(levenshteinModule.levenshtein('kitten', 'sitting')).toBe(3);
+        expect(levenshteinModule.levenshtein('same',   'same')).toBe(0);
     });
 
     test('flex.sim.levenshtein handles nulls gracefully', async () => {
@@ -64,6 +74,10 @@ describe('FLEX Levenshtein Integration Tests', () => {
         expect(result.data[0]['d1']).toBe(3);
         expect(result.data[0]['d2']).toBe(3);
         expect(result.data[0]['d3']).toBe(0);
+
+        expect(levenshteinModule.levenshtein(null, 'abc')).toBe(3);
+        expect(levenshteinModule.levenshtein('abc', null)).toBe(3);
+        expect(levenshteinModule.levenshtein(null, null)).toBe(0);
     });
 
     test('flex.sim.levenshtein symmetry', async () => {
@@ -76,6 +90,8 @@ describe('FLEX Levenshtein Integration Tests', () => {
         const result = await graph.query(q);
 
         expect(result.data[0]['d1']).toBe(result.data[0]['d2']);
+
+        expect(levenshteinModule.levenshtein('distance', 'editing')).toBe(levenshteinModule.levenshtein('editing', 'distance'));
     });
 });
 

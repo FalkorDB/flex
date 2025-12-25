@@ -14,5 +14,15 @@ function rpad(str, count, delim = ' ') {
 	return str.toString().padEnd(count, delim);
 }
 
-falkor.register('text.lpad', lpad) ;
-falkor.register('text.rpad', rpad) ;
+falkor.register('text.lpad', lpad);
+falkor.register('text.rpad', rpad);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        lpad,
+        rpad
+    };
+}

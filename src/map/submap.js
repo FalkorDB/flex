@@ -26,3 +26,12 @@ function submap(map, keys) {
 }
 
 falkor.register('map.submap', submap);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        submap
+    };
+}

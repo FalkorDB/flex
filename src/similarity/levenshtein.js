@@ -63,3 +63,12 @@ function levenshtein(a, b) {
 }
 
 falkor.register('sim.levenshtein', levenshtein);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        levenshtein
+    };
+}

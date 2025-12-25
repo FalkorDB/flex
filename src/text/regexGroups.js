@@ -9,4 +9,13 @@ function regexGroups(str, regex) {
 	return [...str.matchAll(re)].map(match => [...match]);
 }
 
-falkor.register('text.regexGroups', regexGroups) ;
+falkor.register('text.regexGroups', regexGroups);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        regexGroups
+    };
+}

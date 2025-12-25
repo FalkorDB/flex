@@ -31,3 +31,12 @@ function removeKeys(map, keys) {
 }
 
 falkor.register('map.removeKeys', removeKeys);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        removeKeys
+    };
+}

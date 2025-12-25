@@ -210,13 +210,7 @@ function validateVersion() {
       
       const comparison = compareVersions(tagVersion, maxVersion);
       
-      if (comparison === 0) {
-        // This should have been caught earlier by duplicate tag check, but handle it here too
-        console.error(`\n${colors.red}❌ VALIDATION FAILED${colors.reset}`);
-        console.error(`\nNew version ${tagVersion.clean} is equal to the latest released version`);
-        console.error(`\nPlease use a version number greater than ${maxVersion.clean}`);
-        process.exit(1);
-      } else if (comparison < 0) {
+      if (comparison < 0) {
         console.error(`\n${colors.red}❌ VALIDATION FAILED${colors.reset}`);
         console.error(`\nNew version ${tagVersion.clean} is less than the latest released version ${maxVersion.clean}`);
         console.error(`\nPlease use a version number greater than ${maxVersion.clean}`);

@@ -40,7 +40,8 @@ describe('FLEX Collections extra helpers Integration Tests', () => {
         expect(subtractModule.subtract([1,2,3,1], [1])).toEqual([2,3]);
         expect(subtractModule.subtract([1,2,3], [])).toEqual([1,2,3]);
         expect(subtractModule.subtract(null, [1])).toEqual([]);
-        expect(subtractModule.subtract([1,2,3], null)).toEqual([]);
+        // Non-array toRemove should behave like an empty removal list
+        expect(subtractModule.subtract([1,2,3], null)).toEqual([1,2,3]);
     });
 
     test('flex.coll.containsAll basic behavior', async () => {

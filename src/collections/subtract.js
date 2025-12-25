@@ -5,7 +5,8 @@
 /**
  * Return a new list with elements of `toRemove` removed from `list`.
  *
- * - If either argument is not an array, returns an empty list.
+ * - If `list` is not an array, returns an empty list.
+ * - If `toRemove` is not an array, returns a shallow copy of `list`.
  * - Uses strict equality (===) for comparison.
  * - Preserves the original order of `list`.
  *
@@ -16,7 +17,9 @@
 function subtract(list, toRemove) {
     if (!Array.isArray(list)) return [];
 
-    if (!Array.isArray(toRemove) || toRemove.length === 0) return [...list];
+    // If toRemove is not an array (e.g. null), return a shallow copy of list
+    if (!Array.isArray(toRemove)) return [...list];
+    if (toRemove.length === 0) return [...list];
 
     const removeSet = new Set(toRemove);
     return list.filter(item => !removeSet.has(item));

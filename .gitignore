@@ -2,8 +2,7 @@
 node_modules/
 
 # --- Build Artifacts ---
-# We ignore the dist folder because it is generated from src/
-dist/
+# Note: dist/ is now committed to the repository for npm publishing
 
 # --- Testing & Logs ---
 # Ignore Jest coverage reports

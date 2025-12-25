@@ -1,21 +1,39 @@
 {
-  "name": "flex",
+  "name": "@falkordb/flex",
   "version": "1.0.0",
-  "description": "![FLEX Status](https://img.shields.io/badge/status-active-success.svg) ![FalkorDB Version](https://img.shields.io/badge/FalkorDB-0.1.0+-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg)",
-  "main": "index.js",
+  "description": "FLEX (FalkorDB Library for EXtensions) - Standard utility library for FalkorDB with 41+ functions covering string manipulation, collections, dates, and similarity metrics",
+  "main": "dist/flex.js",
+  "files": [
+    "dist/flex.js",
+    "README.md",
+    "LICENSE"
+  ],
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node build.js",
+    "test": "npm run build && jest --verbose --runInBand --forceExit",
+    "prepublishOnly": "npm run build && npm test"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/FalkorDB/flex.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "falkordb",
+    "graph",
+    "database",
+    "udf",
+    "utility",
+    "library",
+    "javascript",
+    "quickjs",
+    "similarity",
+    "text-processing"
+  ],
+  "author": "FalkorDB Ltd.",
+  "license": "MIT",
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/FalkorDB/flex/issues"
@@ -24,9 +42,5 @@
   "devDependencies": {
     "falkordb": "^6.4.1",
     "jest": "^29.7.0"
-  },
-  "scripts": {
-  "build": "node build.js",
-  "test": "npm run build && jest --verbose --runInBand --forceExit"
   }
 }

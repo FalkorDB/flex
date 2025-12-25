@@ -3,18 +3,25 @@
  */
 
 /**
- * Compute Jaccard similarity coefficient between two nodes
+ * Compute Jaccard similarity coefficient between two collections
  *
- * @param {Object} n - First node
- * @param {Object} m - Second node
- * @returns {number}
+ * @param {Array} a - First collection
+ * @param {Array} b - Second collection
+ * @returns {number|null}
  */
-function jaccard(n, m) {
-    const nIds = n.getNeighbors().map(x => x.id);
-    const mIds = m.getNeighbors().map(x => x.id);
+function jaccard(a, b) {
+    // Return null for invalid inputs
+    if (!Array.isArray(a) || !Array.isArray(b)) {
+        return null;
+    }
 
-    const unionSize = union(nIds, mIds).length;
-    const intersectionSize = intersection(nIds, mIds).length;
+    // Compute union and intersection inline
+    const unionArray = [...new Set([...a, ...b])];
+    const setB = new Set(b);
+    const intersectionArray = a.filter(x => setB.has(x));
+
+    const unionSize = unionArray.length;
+    const intersectionSize = intersectionArray.length;
 
     return unionSize === 0 ? 0 : intersectionSize / unionSize;
 }

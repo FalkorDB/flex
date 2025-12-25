@@ -69,3 +69,13 @@ function _flex_normalizeDate(value) {
 }
 
 falkor.register('date.truncate', truncate);
+
+// Conditional Export for Jest
+// QuickJS/FalkorDB will ignore this because 'module' is not defined.
+// istanbul ignore next
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        truncate,
+        _flex_normalizeDate,
+    };
+}

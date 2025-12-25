@@ -4,7 +4,16 @@
 
 const { execSync, spawn } = require('child_process');
 
+// If set to '1', tests will use an already-running local FalkorDB instance
+// instead of starting a Docker container.
+const USE_LOCAL_FALKORDB = process.env.FLEX_USE_LOCAL_FALKORDB === '1';
+
 module.exports = async () => {
+    if (USE_LOCAL_FALKORDB) {
+        console.log('\n🟢 Using existing local FalkorDB (no Docker). Make sure it is listening on localhost:6379.');
+        return;
+    }
+
     console.log('\n🐳 Starting FalkorDB via Docker...');
 
     // Pull the image if it doesn't exist (optional, but good for CI)

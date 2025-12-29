@@ -50,11 +50,11 @@ FLEX is organized into modular namespaces to keep your namespace clean.
 
 | Category             | Namespace       | Description                                                        |
 | :---                 | :---            | :---                                                               |
-| **String Utilities** | `flex.text.*`   | Regex, casing, formatting, and text manipulation.                  |
+| **String Utilities** | `flex.text.*`   | Regex, casing, formatting, text manipulation, and string similarity.|
 | **Collections**      | `flex.coll.*`   | Set operations, shuffling, and list transformations.               |
 | **Maps**             | `flex.map.*`    | Key management, merging, and object manipulation.                  |
 | **JSON**             | `flex.json.*`   | Safe JSON parse/serialize helpers for maps and lists.              |
-| **Similarity**       | `flex.sim.*`    | Jaccard index, Jaro-Winkler, and Levenshtein distance.             |
+| **Similarity**       | `flex.sim.*`    | Jaccard index for set similarity.                                  |
 | **Temporal**         | `flex.date.*`   | Date formatting, parsing, truncation, and timezone conversion.     |
 | **Bitwise**          | `flex.bitwise.*`| Low-level bitwise operations on integers.                          |
 

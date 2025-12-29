@@ -23,7 +23,7 @@ describe('FLEX text.repeat Integration Tests', () => {
     });
 
 	test('Text function: repeat', async () => {
-		res = await graph.query("RETURN flex.text.repeat('A', 3) AS res");
+		const res = await graph.query("RETURN flex.text.repeat('A', 3) AS res");
         expect(res.data[0]['res']).toBe('AAA');
 
         expect(repeatModule.repeat('A', 3)).toBe('AAA');

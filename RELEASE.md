@@ -124,7 +124,7 @@ After publishing:
 2. Verify `flex.js` is attached to the release
 3. Download and test the file:
    ```bash
-   curl -L -o flex.js https://github.com/FalkorDB/flex/releases/download/v1.0.0/flex.js
+   curl -L -o flex.js https://github.com/FalkorDB/flex/releases/download/vX.Y.Z/flex.js
    ```
 
 ## Troubleshooting

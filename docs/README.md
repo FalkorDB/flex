@@ -17,17 +17,15 @@ All function documentation follows a [standard template](./TEMPLATE.md) with the
 
 ### Similarity Functions (`flex.sim.*`)
 
-String and set similarity metrics for fuzzy matching and comparison.
+Set similarity metrics for fuzzy matching and comparison.
 
 | Function | Description |
 |----------|-------------|
-| [sim.levenshtein](./similarity/levenshtein.md) | Compute Levenshtein edit distance between strings |
 | [sim.jaccard](./similarity/jaccard.md) | Calculate Jaccard similarity coefficient between sets |
-| [sim.jaroWinkler](./similarity/jaroWinkler.md) | Compute Jaro-Winkler similarity for short strings |
 
 ### Text Functions (`flex.text.*`)
 
-String manipulation, formatting, and case conversion utilities.
+String manipulation, formatting, case conversion utilities, and string similarity metrics.
 
 | Function | Description |
 |----------|-------------|
@@ -46,6 +44,8 @@ String manipulation, formatting, and case conversion utilities.
 | [text.regexGroups](./text/regexGroups.md) | Extract regex matches and capture groups |
 | [text.repeat](./text/repeat.md) | Repeat string multiple times |
 | [text.replace](./text/replace.md) | Replace text using regex pattern |
+| [text.jaroWinkler](./text/jaroWinkler.md) | Compute Jaro-Winkler similarity for short strings |
+| [text.levenshtein](./text/levenshtein.md) | Compute Levenshtein edit distance between strings |
 
 ### Collection Functions (`flex.coll.*`)
 
@@ -113,8 +113,8 @@ Low-level bitwise operations on integers.
 - `coll.union` - Deduplicate lists
 
 ### Fuzzy Matching and Search
-- `sim.levenshtein` - Find similar strings with edit distance
-- `sim.jaroWinkler` - Match names and short strings
+- `text.levenshtein` - Find similar strings with edit distance
+- `text.jaroWinkler` - Match names and short strings
 - `sim.jaccard` - Compare sets and tag similarity
 
 ### Data Aggregation and Analysis

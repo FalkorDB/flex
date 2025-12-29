@@ -81,7 +81,7 @@ function jaroWinkler(s1, s2) {
     return jaro + prefix * scalingFactor * (1 - jaro);
 }
 
-falkor.register("sim.jaroWinkler", jaroWinkler);
+falkor.register("text.jaroWinkler", jaroWinkler);
 
 // Conditional Export for Jest
 // QuickJS/FalkorDB will ignore this because 'module' is not defined.

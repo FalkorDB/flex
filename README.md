@@ -66,7 +66,7 @@ Find users with names similar to "Sarah" using a threshold.
 
 ```cypher
 MATCH (u:User)
-WHERE flex.sim.levenshtein(u.name, "Sarah") <= 2
+WHERE flex.text.levenshtein(u.name, "Sarah") <= 2
 RETURN u.name, u.email
 ```
 
@@ -75,9 +75,9 @@ Find users with names similar to "Sarah" using Jaro-Winkler similarity.
 
 ```cypher
 MATCH (u:User)
-WHERE flex.sim.jaroWinkler(u.name, "Sarah") > 0.85
+WHERE flex.text.jaroWinkler(u.name, "Sarah") > 0.85
 RETURN u.name, u.email
-ORDER BY flex.sim.jaroWinkler(u.name, "Sarah") DESC
+ORDER BY flex.text.jaroWinkler(u.name, "Sarah") DESC
 ```
 
 3. Data Cleaning & Normalization

@@ -3,7 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
-const jaroWinklerModule = require('../../src/similarity/jaroWinkler');
+const jaroWinklerModule = require('../../src/text/jaroWinkler');
 
 describe('FLEX Jaro-Winkler Integration Tests', () => {
     let db, graph;
@@ -22,7 +22,7 @@ describe('FLEX Jaro-Winkler Integration Tests', () => {
         }
     });
 
-    test('flex.sim.jaroWinkler basic similarity', async () => {
+    test('flex.text.jaroWinkler basic similarity', async () => {
         const q = `
         UNWIND [
             ['MARTHA', 'MARHTA'],
@@ -34,7 +34,7 @@ describe('FLEX Jaro-Winkler Integration Tests', () => {
         RETURN
             pair[0] AS a,
             pair[1] AS b,
-            flex.sim.jaroWinkler(pair[0], pair[1]) AS sim
+            flex.text.jaroWinkler(pair[0], pair[1]) AS sim
         ORDER BY a, b
         `;
 
@@ -54,12 +54,12 @@ describe('FLEX Jaro-Winkler Integration Tests', () => {
         expect(jaroWinklerModule.jaroWinkler('same',      'same')).toBe(1.0);
     });
 
-    test('flex.sim.jaroWinkler handles nulls', async () => {
+    test('flex.text.jaroWinkler handles nulls', async () => {
         const q = `
         RETURN
-            flex.sim.jaroWinkler(NULL, 'abc')  AS d1,
-            flex.sim.jaroWinkler('abc', NULL)  AS d2,
-            flex.sim.jaroWinkler(NULL, NULL)   AS d3
+            flex.text.jaroWinkler(NULL, 'abc')  AS d1,
+            flex.text.jaroWinkler('abc', NULL)  AS d2,
+            flex.text.jaroWinkler(NULL, NULL)   AS d3
         `;
 
         const result = await graph.query(q);
@@ -73,11 +73,11 @@ describe('FLEX Jaro-Winkler Integration Tests', () => {
         expect(jaroWinklerModule.jaroWinkler(null, null)).toBe(1.0);
     });
 
-    test('flex.sim.jaroWinkler symmetry', async () => {
+    test('flex.text.jaroWinkler symmetry', async () => {
         const q = `
         RETURN
-            flex.sim.jaroWinkler('distance', 'editing') AS d1,
-            flex.sim.jaroWinkler('editing', 'distance') AS d2
+            flex.text.jaroWinkler('distance', 'editing') AS d1,
+            flex.text.jaroWinkler('editing', 'distance') AS d2
         `;
 
         const result = await graph.query(q);

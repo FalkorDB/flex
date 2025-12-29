@@ -71,6 +71,6 @@ ORDER BY match_score DESC
 - Ideal for comparing categorical attributes, tags, or interest lists
 
 ## See Also
-- [sim.levenshtein](./levenshtein.md) - Edit distance for string comparison
+- [text.levenshtein](../text/levenshtein.md) - Edit distance for string comparison
 - [coll.intersection](../collections/intersection.md) - Get common elements between sets
 - [coll.union](../collections/union.md) - Combine sets

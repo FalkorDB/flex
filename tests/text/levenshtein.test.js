@@ -3,7 +3,7 @@
  */
 
 const { initializeFLEX } = require('../setup');
-const levenshteinModule = require('../../src/similarity/levenshtein');
+const levenshteinModule = require('../../src/text/levenshtein');
 
 describe('FLEX Levenshtein Integration Tests', () => {
     let db, graph;
@@ -23,7 +23,7 @@ describe('FLEX Levenshtein Integration Tests', () => {
         }
     });
 
-    test('flex.sim.levenshtein basic string distance', async () => {
+    test('flex.text.levenshtein basic string distance', async () => {
         const q = `
         UNWIND [
             ['kitten',  'sitting'],
@@ -37,7 +37,7 @@ describe('FLEX Levenshtein Integration Tests', () => {
         RETURN
             pair[0] AS a,
             pair[1] AS b,
-            flex.sim.levenshtein(pair[0], pair[1]) AS dist
+            flex.text.levenshtein(pair[0], pair[1]) AS dist
         ORDER BY a, b
         `;
 
@@ -61,12 +61,12 @@ describe('FLEX Levenshtein Integration Tests', () => {
         expect(levenshteinModule.levenshtein('same',   'same')).toBe(0);
     });
 
-    test('flex.sim.levenshtein handles nulls gracefully', async () => {
+    test('flex.text.levenshtein handles nulls gracefully', async () => {
         const q = `
         RETURN
-            flex.sim.levenshtein(NULL, 'abc')  AS d1,
-            flex.sim.levenshtein('abc', NULL)  AS d2,
-            flex.sim.levenshtein(NULL, NULL)   AS d3
+            flex.text.levenshtein(NULL, 'abc')  AS d1,
+            flex.text.levenshtein('abc', NULL)  AS d2,
+            flex.text.levenshtein(NULL, NULL)   AS d3
         `;
 
         const result = await graph.query(q);
@@ -80,11 +80,11 @@ describe('FLEX Levenshtein Integration Tests', () => {
         expect(levenshteinModule.levenshtein(null, null)).toBe(0);
     });
 
-    test('flex.sim.levenshtein symmetry', async () => {
+    test('flex.text.levenshtein symmetry', async () => {
         const q = `
         RETURN
-            flex.sim.levenshtein('distance', 'editing') AS d1,
-            flex.sim.levenshtein('editing', 'distance') AS d2
+            flex.text.levenshtein('distance', 'editing') AS d1,
+            flex.text.levenshtein('editing', 'distance') AS d2
         `;
 
         const result = await graph.query(q);

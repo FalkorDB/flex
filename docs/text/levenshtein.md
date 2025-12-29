@@ -1,11 +1,11 @@
-# sim.levenshtein
+# text.levenshtein
 
 ## Description
 Computes the Levenshtein edit distance between two strings. The edit distance is the minimum number of single-character edits (insertions, deletions, or substitutions) required to change one string into another. This is useful for fuzzy string matching, spell checking, and finding similar records.
 
 ## Syntax
 ```cypher
-flex.sim.levenshtein(string1, string2)
+flex.text.levenshtein(string1, string2)
 ```
 
 ## Parameters
@@ -24,7 +24,7 @@ The minimum number of single-character edits needed to transform `string1` into 
 ### Example 1: Basic String Comparison
 ```cypher
 // Compare two similar strings
-RETURN flex.sim.levenshtein('kitten', 'sitting') AS distance
+RETURN flex.text.levenshtein('kitten', 'sitting') AS distance
 ```
 
 **Output:**
@@ -38,8 +38,8 @@ distance
 ```cypher
 // Find users with names similar to "Sarah" within edit distance of 2
 MATCH (u:User)
-WHERE flex.sim.levenshtein(u.name, 'Sarah') <= 2
-RETURN u.name, u.email, flex.sim.levenshtein(u.name, 'Sarah') AS distance
+WHERE flex.text.levenshtein(u.name, 'Sarah') <= 2
+RETURN u.name, u.email, flex.text.levenshtein(u.name, 'Sarah') AS distance
 ORDER BY distance
 ```
 
@@ -48,7 +48,7 @@ ORDER BY distance
 // Find the closest matching product name
 WITH 'iPhone' AS search_term
 MATCH (p:Product)
-WITH p, flex.sim.levenshtein(p.name, search_term) AS distance
+WITH p, flex.text.levenshtein(p.name, search_term) AS distance
 WHERE distance <= 3
 RETURN p.name, distance
 ORDER BY distance
@@ -64,5 +64,5 @@ LIMIT 5
 - Case-sensitive comparison (use `toLower()` if case-insensitive matching is needed)
 
 ## See Also
-- [sim.jaccard](./jaccard.md) - Set-based similarity for collections
-- [sim.jaroWinkler](./jaroWinkler.md) - Alternative string similarity metric
+- [sim.jaccard](../similarity/jaccard.md) - Set-based similarity for collections
+- [text.jaroWinkler](./jaroWinkler.md) - Alternative string similarity metric

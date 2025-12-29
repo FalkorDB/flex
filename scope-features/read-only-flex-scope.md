@@ -6,8 +6,8 @@ This document defines the initial scope for Flex read-only functions and procedu
 
 Current Flex proposal (from `flex-first-content.txt`):
 
-- `flex.sim.levenshtein`
-- `flex.sim.jaroWinkler`
+- `flex.text.levenshtein`
+- `flex.text.jaroWinkler`
 - `flex.sim.jaccard`
 - `flex.sim.overlap`
 - `flex.map.removeKey`

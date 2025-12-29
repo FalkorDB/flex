@@ -62,7 +62,7 @@ function levenshtein(a, b) {
     return prev[b.length];
 }
 
-falkor.register('sim.levenshtein', levenshtein);
+falkor.register('text.levenshtein', levenshtein);
 
 // Conditional Export for Jest
 // QuickJS/FalkorDB will ignore this because 'module' is not defined.

@@ -1,11 +1,11 @@
-# sim.jaroWinkler
+# text.jaroWinkler
 
 ## Description
 Computes the Jaro-Winkler similarity between two strings. This metric is particularly effective for short strings like names and addresses. It gives more favorable ratings to strings that match from the beginning. Returns a value between 0 (no similarity) and 1 (exact match).
 
 ## Syntax
 ```cypher
-flex.sim.jaroWinkler(string1, string2)
+flex.text.jaroWinkler(string1, string2)
 ```
 
 ## Parameters
@@ -27,7 +27,7 @@ A similarity score between 0 and 1:
 ### Example 1: Name Matching
 ```cypher
 // Compare similar names
-RETURN flex.sim.jaroWinkler('Martha', 'Marhta') AS similarity
+RETURN flex.text.jaroWinkler('Martha', 'Marhta') AS similarity
 ```
 
 **Output:**
@@ -41,8 +41,8 @@ similarity
 ```cypher
 // Find people with names similar to "William"
 MATCH (p:Person)
-WHERE flex.sim.jaroWinkler(p.firstName, 'William') > 0.85
-RETURN p.firstName, p.lastName, flex.sim.jaroWinkler(p.firstName, 'William') AS score
+WHERE flex.text.jaroWinkler(p.firstName, 'William') > 0.85
+RETURN p.firstName, p.lastName, flex.text.jaroWinkler(p.firstName, 'William') AS score
 ORDER BY score DESC
 ```
 
@@ -52,7 +52,7 @@ ORDER BY score DESC
 MATCH (c1:Company)
 MATCH (c2:Company)
 WHERE id(c1) < id(c2)
-WITH c1, c2, flex.sim.jaroWinkler(c1.name, c2.name) AS similarity
+WITH c1, c2, flex.text.jaroWinkler(c1.name, c2.name) AS similarity
 WHERE similarity > 0.9
 RETURN c1.name, c2.name, similarity
 ORDER BY similarity DESC
@@ -67,5 +67,5 @@ ORDER BY similarity DESC
 - Commonly used in record linkage and deduplication tasks
 
 ## See Also
-- [sim.levenshtein](./levenshtein.md) - Edit distance metric for string comparison
-- [sim.jaccard](./jaccard.md) - Set-based similarity
+- [text.levenshtein](./levenshtein.md) - Edit distance metric for string comparison
+- [sim.jaccard](../similarity/jaccard.md) - Set-based similarity

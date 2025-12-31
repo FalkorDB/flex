@@ -47,7 +47,7 @@ RETURN flex.date.parse('2024-03-15T14:30:00Z') AS dt
 ### Example 4: Parse with Timezone Context
 ```cypher
 WITH '2024-03-15 10:00:00' AS localTime
-RETURN flex.date.parse(localTime, 'YYYY-MM-DDTHH:mm:ss', '+05:00') AS utcTime
+RETURN flex.date.parse(localTime, 'YYYY-MM-DD HH:mm:ss', '+05:00') AS utcTime
 ```
 (Interprets input as being in +05:00 timezone and converts to UTC)
 

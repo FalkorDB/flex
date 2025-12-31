@@ -2,7 +2,7 @@
  * Copyright FalkorDB Ltd. 2023 - present
  */
 
-const { execSync, spawn } = require('child_process');
+const { spawn } = require('child_process');
 
 // If set to '1', tests will use an already-running local FalkorDB instance
 // instead of starting a Docker container.

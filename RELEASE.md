@@ -94,7 +94,7 @@ Once a release is published, users can download `flex.js` directly from the GitH
 curl -L -o flex.js https://github.com/FalkorDB/flex/releases/latest/download/flex.js
 
 # Load into FalkorDB instance
-redis-cli -h<host> -p<port> GRAPH.UDF LOAD flex "$(cat flex.js)"
+redis-cli -h <host> -p <port> GRAPH.UDF LOAD flex "$(cat flex.js)"
 ```
 
 Or download a specific version:
@@ -124,7 +124,7 @@ After publishing:
 2. Verify `flex.js` is attached to the release
 3. Download and test the file:
    ```bash
-   curl -L -o flex.js https://github.com/FalkorDB/flex/releases/download/v1.0.0/flex.js
+   curl -L -o flex.js https://github.com/FalkorDB/flex/releases/download/vX.Y.Z/flex.js
    ```
 
 ## Troubleshooting

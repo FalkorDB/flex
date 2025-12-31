@@ -12,7 +12,7 @@ flex.date.parse(dateString, pattern, timezone)
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `dateString` | string | Yes | The date/time string to parse |
-| `pattern` | string | No | Format pattern (supported: `'YYYY-MM-DD'`, `'YYYY-MM-DDTHH:mm:ss'`, or auto-detect) |
+| `pattern` | string | No | Format pattern (supported: `'YYYY-MM-DD'`, `'YYYY-MM-DDTHH:mm:ss'` or `'YYYY-MM-DD HH:mm:ss'`, or auto-detect) |
 | `timezone` | string | No | Timezone offset like `"+02:00"` to interpret input in specific timezone |
 
 ## Returns
@@ -47,7 +47,7 @@ RETURN flex.date.parse('2024-03-15T14:30:00Z') AS dt
 ### Example 4: Parse with Timezone Context
 ```cypher
 WITH '2024-03-15 10:00:00' AS localTime
-RETURN flex.date.parse(localTime, 'YYYY-MM-DDTHH:mm:ss', '+05:00') AS utcTime
+RETURN flex.date.parse(localTime, 'YYYY-MM-DD HH:mm:ss', '+05:00') AS utcTime
 ```
 (Interprets input as being in +05:00 timezone and converts to UTC)
 
@@ -62,7 +62,7 @@ CREATE (e:Event {
 
 ## Notes
 - Returns `null` for invalid or unparseable date strings
-- Supported explicit patterns: `'YYYY-MM-DD'`, `'YYYY-MM-DDTHH:mm:ss'`
+- Supported explicit patterns: `'YYYY-MM-DD'`, `'YYYY-MM-DDTHH:mm:ss'` and `'YYYY-MM-DD HH:mm:ss'` (both `T` and space separators are accepted)
 - Falls back to JavaScript Date constructor for other formats (ISO8601, etc.)
 - Timezone parameter interprets the input time as local time in that offset
 - All dates are normalized to UTC internally

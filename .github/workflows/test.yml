@@ -1,4 +1,6 @@
 name: FLEX CI
+permissions:
+  contents: read
 
 on:
   push:

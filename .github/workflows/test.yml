@@ -43,3 +43,7 @@ jobs:
 
       - name: Collect test coverage
         uses: ArtiomTr/jest-coverage-report-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          skip-step: tests
+          coverage-file: coverage/coverage-final.json

@@ -42,7 +42,10 @@ jobs:
           path: coverage/
 
       - name: Collect test coverage
+        continue-on-error: true
         uses: ArtiomTr/jest-coverage-report-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           test-script: npm test -- --coverage --runInBand
+          annotations: none
+          output: summary

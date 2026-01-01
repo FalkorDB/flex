@@ -17,9 +17,15 @@ function flatten(nested) {
     if (!Array.isArray(nested)) return [];
 
     const result = [];
-    for (const item of nested) {
+    for (let i = 0; i < nested.length; i++) {
+        const item = nested[i];
+
         if (Array.isArray(item)) {
-            result.push(...item);
+            // Manually push elements to avoid `push(...item)` argument explosion
+            // on very large inner arrays.
+            for (let j = 0; j < item.length; j++) {
+                result.push(item[j]);
+            }
         } else {
             result.push(item);
         }

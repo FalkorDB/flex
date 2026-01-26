@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/FalkorDB/flex#readme",
   "devDependencies": {
-    "falkordb": "^6.5.1",
+    "falkordb": "^6.6.0",
     "jest": "^30.2.0"
   }
 }

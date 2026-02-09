@@ -134,4 +134,95 @@ describe('FLEX exp-algo Louvain Integration Tests', () => {
     expect(hasTeam2).toBe(true);
     expect(hasTeam3).toBe(true);
   });
+
+  // Long-running scaling test.
+  // Disabled by default to keep local/CI runs fast.
+  // Enable with:
+  //   FLEX_LONG_TESTS=1 FLEX_LOUVAIN_SCALE=1000 npm test -- tests/exp-algo/louvain.test.js
+  //
+  // Scale definition:
+  // - Base graph: 12 nodes (3 teams x 4 nodes)
+  // - This test uses 12 * scale nodes, so scale=1000 => 12,000 nodes.
+  const longTest = process.env.FLEX_LONG_TESTS === '1';
+  (longTest ? test : test.skip)(
+    'flex.exp.louvain can run on a larger graph (12 * scale nodes)',
+    async () => {
+      const scale = Number.parseInt(process.env.FLEX_LOUVAIN_SCALE || '1000', 10);
+      if (!Number.isFinite(scale) || scale <= 0) {
+        throw new Error('FLEX_LOUVAIN_SCALE must be a positive integer');
+      }
+
+      // 3 teams x (4 * scale) nodes
+      const teamSize = 4 * scale;
+      const totalNodes = 3 * teamSize;
+
+      await graph.query(`MATCH (n) DETACH DELETE n`);
+
+      // Create nodes
+      await graph.query(`
+        UNWIND [1,2,3] AS team
+        UNWIND range(0, ${teamSize - 1}) AS i
+        CREATE (:N {name: toString(team) + '_' + toString(i), team: team, i: i})
+      `);
+
+      // Create a chain of strong edges inside each team
+      await graph.query(`
+        UNWIND [1,2,3] AS team
+        MATCH (n:N {team: team})
+        WITH team, n
+        ORDER BY team, n.i
+        WITH team, collect(n) AS ns
+        UNWIND range(0, size(ns) - 2) AS i
+        WITH ns[i] AS a, ns[i + 1] AS b
+        CREATE (a)-[:R {weight: 10}]->(b)
+      `);
+
+      // Add a few weak cross-team edges
+      await graph.query(`
+        MATCH
+          (t1:N {team: 1, i: ${teamSize - 1}}),
+          (t2:N {team: 2, i: 0}),
+          (t3:N {team: 3, i: 0})
+        CREATE
+          (t1)-[:R {weight: 1}]->(t2),
+          (t2)-[:R {weight: 1}]->(t3)
+      `);
+
+      // Run Louvain on the whole node set.
+      // Use direction: 'incoming' so each edge is discovered from its destination.
+      // Tighten passes/levels to keep runtime bounded on large graphs.
+      const out = await graph.query(`
+        MATCH (n:N)
+        WITH n ORDER BY ID(n)
+        WITH collect(n) AS nodes, count(n) AS total
+        RETURN total, flex.exp.louvain({
+          nodes: nodes,
+          direction: 'incoming',
+          maxPasses: 2,
+          maxLevels: 2
+        }) AS res
+      `);
+
+      const total = out.data[0].total;
+      const res = out.data[0].res;
+
+      expect(total).toBe(totalNodes);
+      expect(res).toHaveProperty('partition');
+      expect(res).toHaveProperty('communities');
+
+      const partitionCount = Object.keys(res.partition || {}).length;
+      const communityMemberCount = Object.values(res.communities || {}).reduce(
+        (acc, ids) => acc + (Array.isArray(ids) ? ids.length : 0),
+        0
+      );
+
+      // Every node in the input should be assigned a community.
+      expect(partitionCount).toBe(totalNodes);
+      expect(communityMemberCount).toBe(totalNodes);
+
+      // Basic sanity: should produce at least 1 community and not crash.
+      expect(Object.keys(res.communities || {}).length).toBeGreaterThanOrEqual(1);
+    },
+    15 * 60 * 1000
+  );
 });

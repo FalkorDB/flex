@@ -1,6 +1,8 @@
 name: FLEX CI
 permissions:
   contents: read
+  checks: write
+  pull-requests: write
 
 on:
   push:

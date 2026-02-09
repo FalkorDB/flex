@@ -47,3 +47,8 @@ jobs:
 
       - name: Collect test coverage
         uses: ArtiomTr/jest-coverage-report-action@v2
+        with:
+          # The integration tests talk to a single FalkorDB instance and are not
+          # safe to run in parallel. The action's default is parallel execution,
+          # which causes flaky failures/timeouts.
+          test-script: "npx jest --runInBand --forceExit"

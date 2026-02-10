@@ -1,7 +1,7 @@
-# exp.louvain (Experimental)
+# exp.leiden (Experimental)
 
 ## Description
-Detect communities in a graph using the **Louvain** modularity-optimization algorithm.
+Detect communities in a graph using a **Leiden-style** modularity-optimization algorithm.
 
 **Warning:** This function is **experimental**.
 - The API, behavior, and performance characteristics may change between releases.
@@ -9,9 +9,11 @@ Detect communities in a graph using the **Louvain** modularity-optimization algo
 
 This implementation runs inside FalkorDB’s UDF runtime and uses `graph.traverse` to build an in-memory adjacency representation of the supplied node set.
 
+Compared to `exp.louvain`, Leiden adds a **refinement** step. In this implementation, refinement is done by splitting each community into **connected components**, which helps avoid disconnected communities.
+
 ## Syntax
 ```cypher
-flex.exp.louvain({nodes: nodes, direction: 'incoming', resolution: 1, maxLevels: 10, maxPasses: 10})
+flex.exp.leiden({nodes: nodes, resolution: 1, maxLevels: 10, maxPasses: 10, seed: 42})
 ```
 
 ## Parameters
@@ -24,7 +26,8 @@ flex.exp.louvain({nodes: nodes, direction: 'incoming', resolution: 1, maxLevels:
 | `maxPasses` | `integer` | No | Maximum number of node-moving passes per level. Default: `10`. |
 | `maxLevels` | `integer` | No | Maximum number of coarsening (aggregation) levels. Default: `10`. |
 | `minGain` | `float` | No | Minimum modularity gain required to move a node to a different community. Default: `1e-12`. |
-| `debug` | `boolean` | No | When `true`, returns additional debug information about traversal/adjacency building. Default: `false`. |
+| `seed` | `integer` | No | When provided, uses a deterministic pseudo-random node iteration order (helps avoid order-bias and makes results reproducible). |
+| `debug` | `boolean` | No | When `true`, returns additional debug information. Default: `false`. |
 
 ## Returns
 **Type:** `map`
@@ -38,8 +41,6 @@ A map with the following keys:
 ## Examples
 
 ### Example 1: Team communication communities
-Identify communities in a communication graph with strong intra-team edges and weak cross-team edges.
-
 ```cypher
 // Create a toy org with 3 teams
 CREATE
@@ -73,21 +74,14 @@ CREATE
 MATCH (p:Person)
 WITH p ORDER BY ID(p)
 WITH collect(p) AS nodes
-RETURN flex.exp.louvain({nodes: nodes, direction: 'incoming'}) AS communities;
-```
-
-### Example 2: Smaller communities using higher resolution
-```cypher
-MATCH (n)
-WITH n ORDER BY ID(n)
-WITH collect(n) AS nodes
-RETURN flex.exp.louvain({nodes: nodes, resolution: 2.0}) AS res;
+RETURN flex.exp.leiden({nodes: nodes, seed: 42}) AS res;
 ```
 
 ## Notes
-- **Performance:** Louvain requires building an in-memory adjacency structure. For large node sets this may be expensive; prefer running it on a bounded subgraph.
-- **Edge weights:** the current implementation uses the `weight` relationship property when present; otherwise it defaults to `1`.
-- **Direction:** results can change depending on which direction(s) you traverse when building adjacency.
+- **Refinement step:** this implementation splits each community into connected components.
+- **Performance:** requires building an in-memory adjacency structure; prefer running it on a bounded subgraph.
+- **Edge weights:** uses relationship property `weight` when present; otherwise defaults to `1`.
 
 ## See Also
+- [exp.louvain](./louvain.md)
 - [docs/README.md](../README.md)

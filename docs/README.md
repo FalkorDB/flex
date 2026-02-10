@@ -115,6 +115,7 @@ Low-level bitwise operations on integers.
 |----------|-------------|
 | [exp.louvain](./exp-algo/louvain.md) | Louvain community detection (modularity optimization) |
 | [exp.leiden](./exp-algo/leiden.md) | Leiden-style community detection (Louvain + refinement) |
+| [exp.degreeCentrality](./exp-algo/degreeCentrality.md) | Degree centrality (undirected; returns degree and normalized degree) |
 
 ## Common Use Cases
 

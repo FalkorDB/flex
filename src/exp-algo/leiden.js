@@ -44,19 +44,26 @@ if (typeof module !== 'undefined' && module.exports) {
   }
 
   /**
-   * Refinement step: split each community into connected components
-   * (with connectivity computed inside the community induced subgraph).
+   * Refinement step: split each community into connected components.
+   *
+   * Implementation detail:
+   * - keeps the original community id for the first component
+   * - assigns new numeric community ids for additional components
    */
   function refineByConnectedComponents({ adjacency, nodeIds, partition }) {
     const communities = exp.partitionToCommunities(partition);
+
+    // `partition` from exp.oneLevel is already dense (0..k-1) due to renumbering.
+    let nextCommunityId = communities.size;
 
     const refined = new Map();
     let splitCommunities = 0;
     let totalComponents = 0;
 
     for (const [comm, nodes] of communities.entries()) {
-      if (!nodes || nodes.length <= 1) {
-        if (nodes && nodes.length === 1) refined.set(nodes[0], comm);
+      if (!nodes || nodes.length === 0) continue;
+      if (nodes.length === 1) {
+        refined.set(nodes[0], comm);
         continue;
       }
 
@@ -71,15 +78,15 @@ if (typeof module !== 'undefined' && module.exports) {
         componentsForThisCommunity += 1;
         totalComponents += 1;
 
-        const compKey = `${String(comm)}__${componentsForThisCommunity}`;
+        const outComm = componentsForThisCommunity === 1 ? comm : nextCommunityId++;
 
-        // BFS
-        const q = [start];
+        // DFS (stack)
+        const stack = [start];
         visited.add(start);
-        refined.set(start, compKey);
+        refined.set(start, outComm);
 
-        while (q.length) {
-          const v = q.pop();
+        while (stack.length) {
+          const v = stack.pop();
           const neigh = adjacency.get(v);
           if (!neigh) continue;
 
@@ -87,8 +94,8 @@ if (typeof module !== 'undefined' && module.exports) {
             if (!inComm.has(nbr)) continue;
             if (visited.has(nbr)) continue;
             visited.add(nbr);
-            refined.set(nbr, compKey);
-            q.push(nbr);
+            refined.set(nbr, outComm);
+            stack.push(nbr);
           }
         }
       }
@@ -96,26 +103,18 @@ if (typeof module !== 'undefined' && module.exports) {
       if (componentsForThisCommunity > 1) {
         splitCommunities += 1;
       }
-
-      // If the community was actually connected, keep the original id to reduce churn.
-      if (componentsForThisCommunity === 1) {
-        for (const n of nodes) {
-          refined.set(n, comm);
-        }
-      }
     }
 
     // Ensure every nodeId is present (defensive).
     for (const id of nodeIds) {
-      if (!refined.has(id)) {
-        refined.set(id, partition.get(id));
-      }
+      if (!refined.has(id)) refined.set(id, partition.get(id));
     }
 
     return {
-      partition: exp.renumberPartition(refined),
+      partition: refined,
       splitCommunities,
       totalComponents,
+      communities: nextCommunityId,
     };
   }
 
@@ -205,7 +204,7 @@ if (typeof module !== 'undefined' && module.exports) {
           moves: movedRes.moves,
           splitCommunities: refinedRes.splitCommunities,
           totalComponents: refinedRes.totalComponents,
-          communities: exp.partitionToCommunities(part).size,
+          communities: refinedRes.communities,
         });
       }
 

@@ -247,7 +247,7 @@
     for (const id of nodeIds) adjacency.set(id, new Map());
 
     for (const [sid, w] of selfLoopWeightByStable.entries()) {
-      const id = byStableId.get(sid) ?? sid;
+      const id = byStableId.has(sid) ? byStableId.get(sid) : sid;
       const row = adjacency.get(id) || new Map();
       row.set(id, (row.get(id) || 0) + w);
       adjacency.set(id, row);
@@ -256,10 +256,10 @@
     let undirectedEdgeKeys = 0;
 
     for (const [aStable, row] of undirectedWeights.entries()) {
-      const a = byStableId.get(aStable) ?? aStable;
+      const a = byStableId.has(aStable) ? byStableId.get(aStable) : aStable;
       for (const [bStable, w] of row.entries()) {
         undirectedEdgeKeys += 1;
-        const b = byStableId.get(bStable) ?? bStable;
+        const b = byStableId.has(bStable) ? byStableId.get(bStable) : bStable;
 
         let aRow = adjacency.get(a);
         if (!aRow) {

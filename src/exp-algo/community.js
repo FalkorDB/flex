@@ -299,6 +299,148 @@
     return { adjacency, nodeIds, debug: debugOut };
   });
 
+  /**
+   * Build a directed weighted adjacency map using `graph.traverse`.
+   *
+   * The resulting adjacency is `nodeId -> (neighborId -> weight)` representing
+   * the **edge orientation as stored on the edge object** (source -> destination).
+   *
+   * Note: `direction` only controls which edges are scanned by `graph.traverse`.
+   * If you use `'both'`, the same edge may be discovered twice (once from its
+   * source via outgoing traversal and once from its destination via incoming
+   * traversal). This does not change normalized transition probabilities.
+   */
+  define('buildDirectedAdjacency', function buildDirectedAdjacency({
+    nodes,
+    direction = 'both',
+    maxEdgesPerNode = Infinity,
+    getNodeId = exp.defaultGetNodeId,
+    getWeight = (edge) => exp.getEdgeWeight(edge),
+    debug = false,
+  }) {
+    if (!Array.isArray(nodes)) {
+      throw new TypeError('buildDirectedAdjacency: `nodes` must be an array');
+    }
+
+    // Dedupe ids by stable key.
+    const nodeIds = [];
+    const byStableId = new Map();
+    for (const n of nodes) {
+      const id = getNodeId(n);
+      if (typeof id === 'undefined' || id === null) continue;
+      const sid = exp.stableKeyPart(id);
+      if (byStableId.has(sid)) continue;
+      byStableId.set(sid, id);
+      nodeIds.push(id);
+    }
+
+    const allowedStable = new Set(byStableId.keys());
+
+    const adjacency = new Map();
+    for (const id of nodeIds) adjacency.set(id, new Map());
+
+    const debugEdgeCounts = debug ? Object.create(null) : null;
+    const directions = exp.normalizeTraverseDirections(direction);
+
+    for (const dir of directions) {
+      for (let i = 0; i < nodes.length; i++) {
+        const current = nodes[i];
+        const currentIdRaw = getNodeId(current);
+        if (typeof currentIdRaw === 'undefined' || currentIdRaw === null) continue;
+
+        const currentStable = exp.stableKeyPart(currentIdRaw);
+        if (!allowedStable.has(currentStable)) continue;
+
+        const currentId = byStableId.get(currentStable);
+
+        const reachables = exp.traverseEdgesForNode(current, dir);
+        const edges = reachables[0] || [];
+
+        if (debugEdgeCounts) {
+          const k = String(currentId);
+          debugEdgeCounts[k] = (debugEdgeCounts[k] || 0) + edges.length;
+        }
+
+        const edgeCount = Math.min(edges.length, maxEdgesPerNode);
+
+        for (let e = 0; e < edgeCount; e++) {
+          const edge = edges[e];
+          const w = getWeight(edge);
+          if (!(w > 0)) continue;
+
+          const s = edge ? edge.source : undefined;
+          const d = edge ? edge.destination : undefined;
+          const sId = s != null ? getNodeId(s) : undefined;
+          const dId = d != null ? getNodeId(d) : undefined;
+
+          let srcId;
+          let dstId;
+
+          // Preferred path: use edge orientation as-is.
+          if (
+            typeof sId !== 'undefined' &&
+            sId !== null &&
+            typeof dId !== 'undefined' &&
+            dId !== null
+          ) {
+            srcId = sId;
+            dstId = dId;
+          } else {
+            // Fallback: infer neighbor relative to current.
+            const neighbor = exp.otherEndpoint(edge, currentIdRaw, getNodeId);
+            const nId = getNodeId(neighbor);
+            if (typeof nId === 'undefined' || nId === null) continue;
+
+            // With missing endpoints, infer orientation based on traversal direction.
+            if (dir === 'incoming') {
+              srcId = nId;
+              dstId = currentIdRaw;
+            } else {
+              srcId = currentIdRaw;
+              dstId = nId;
+            }
+          }
+
+          const srcStable = exp.stableKeyPart(srcId);
+          const dstStable = exp.stableKeyPart(dstId);
+          if (!allowedStable.has(srcStable) || !allowedStable.has(dstStable)) continue;
+
+          const srcCanonical = byStableId.get(srcStable);
+          const dstCanonical = byStableId.get(dstStable);
+
+          let row = adjacency.get(srcCanonical);
+          if (!row) {
+            row = new Map();
+            adjacency.set(srcCanonical, row);
+          }
+
+          row.set(dstCanonical, (row.get(dstCanonical) || 0) + w);
+        }
+      }
+    }
+
+    let debugOut;
+    if (debugEdgeCounts) {
+      let directedEdgeKeys = 0;
+      let totalDirectedWeight = 0;
+      for (const row of adjacency.values()) {
+        for (const w of row.values()) {
+          directedEdgeKeys += 1;
+          totalDirectedWeight += w;
+        }
+      }
+
+      debugOut = {
+        edgeCounts: debugEdgeCounts,
+        directedEdgeKeys,
+        totalDirectedWeight,
+        directions,
+      };
+    }
+
+    return { adjacency, nodeIds, debug: debugOut };
+  });
+
   define('renumberPartition', function renumberPartition(partition) {
     const newByOld = new Map();
     let next = 0;

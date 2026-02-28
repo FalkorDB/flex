@@ -57,6 +57,7 @@ FLEX is organized into modular namespaces to keep your namespace clean.
 | **Similarity**       | `flex.sim.*`    | Jaccard index for set similarity.                                  |
 | **Temporal**         | `flex.date.*`   | Date formatting, parsing, truncation, and timezone conversion.     |
 | **Bitwise**          | `flex.bitwise.*`| Low-level bitwise operations on integers.                          |
+| **Experimental**     | `flex.exp.*`    | Experimental graph algorithms (APIs may change).                   |
 
 
 💡 Usage Examples

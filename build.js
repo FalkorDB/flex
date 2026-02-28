@@ -19,6 +19,9 @@ if (!fs.existsSync(path.dirname(outFile))) {
 const getAllFiles = (dirPath, arrayOfFiles = []) => {
     const files = fs.readdirSync(dirPath, { withFileTypes: true });
 
+    // Ensure deterministic traversal order across platforms/filesystems.
+    files.sort((a, b) => a.name.localeCompare(b.name));
+
     files.forEach(file => {
         const fullPath = path.join(dirPath, file.name);
         if (file.isDirectory()) {
@@ -33,7 +36,8 @@ const getAllFiles = (dirPath, arrayOfFiles = []) => {
 
 console.log('🔨 Building FLEX bundle from nested directories...');
 
-const allFiles = getAllFiles(srcDir);
+const allFiles = getAllFiles(srcDir)
+    .sort((a, b) => path.relative(srcDir, a).localeCompare(path.relative(srcDir, b)));
 
 const combinedContent = allFiles.map(filePath => {
     // Get a clean relative path for the header (e.g., "collections/shuffle.js")

@@ -105,6 +105,17 @@ Low-level bitwise operations on integers.
 | [bitwise.shiftLeft](./bitwise/shiftLeft.md) | Left bit shift operation |
 | [bitwise.shiftRight](./bitwise/shiftRight.md) | Right bit shift with sign extension |
 
+### Experimental Graph Algorithms (`flex.exp.*`)
+
+**Warning:** These functions are **experimental**.
+- APIs and behavior may change between releases.
+- Performance characteristics may change; treat them as best-effort utilities.
+
+| Function | Description |
+|----------|-------------|
+| [exp.harmonicCentrality](./exp-algo/harmonicCentrality.md) | Harmonic centrality (handles disconnected graphs naturally) |
+| [exp.closenessCentrality](./exp-algo/closenessCentrality.md) | Closeness centrality with Wasserman-Faust variant for disconnected graphs |
+
 ## Common Use Cases
 
 ### Data Cleaning and Normalization

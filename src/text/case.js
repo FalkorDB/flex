@@ -35,9 +35,12 @@ function decapitalize(str) {
  */
 function swapCase(str) {
     if (str == null) return null;
-    return str.split('').map(c => 
-        c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()
-    ).join('');
+    let result = '';
+    for (let i = 0; i < str.length; i++) {
+        const c = str[i];
+        result += c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase();
+    }
+    return result;
 }
 
 /**

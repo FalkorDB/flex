@@ -49,10 +49,22 @@ describe('FLEX Bridges Integration Tests', () => {
     });
 
     test('flex.exp.bridges finds bridge in mixed graph', async () => {
-        // Graph:  0 -- 1 -- 3 -- 4
+        // Graph:  a -- b -- d -- e
         //          \  /
-        //           2
-        // Bridge: 1-3 and 3-4
+        //           c
+        // Bridge: b-d and d-e
+        const q = `RETURN flex.exp.bridges({
+            a: ['b', 'c'],
+            b: ['a', 'c', 'd'],
+            c: ['a', 'b'],
+            d: ['b', 'e'],
+            e: ['d']
+        }) AS br`;
+        const result = await graph.query(q);
+        const br = result.data[0]['br'].map(e => e.sort()).sort();
+        expect(br).toEqual([['b', 'd'], ['d', 'e']]);
+
+        // Local module test with numeric keys
         const adj = {
             '0': ['1', '2'],
             '1': ['0', '2', '3'],
@@ -60,18 +72,6 @@ describe('FLEX Bridges Integration Tests', () => {
             '3': ['1', '4'],
             '4': ['3']
         };
-        const q = `RETURN flex.exp.bridges({
-            '0': ['1', '2'],
-            '1': ['0', '2', '3'],
-            '2': ['0', '1'],
-            '3': ['1', '4'],
-            '4': ['3']
-        }) AS br`;
-        const result = await graph.query(q);
-        const br = result.data[0]['br'].map(e => e.sort()).sort();
-        expect(br).toEqual([['1', '3'], ['3', '4']]);
-
-        // Local module test
         const localBr = bridges(adj).map(e => e.sort()).sort();
         expect(localBr).toEqual([['1', '3'], ['3', '4']]);
     });

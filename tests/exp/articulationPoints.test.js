@@ -32,10 +32,21 @@ describe('FLEX Articulation Points Integration Tests', () => {
     });
 
     test('flex.exp.articulationPoints finds multiple articulation points', async () => {
-        // Graph:  0 -- 1 -- 3 -- 4
+        // Graph:  a -- b -- d -- e
         //          \  /
-        //           2
-        // Node 1 and 3 are articulation points
+        //           c
+        // Node b and d are articulation points
+        const q = `RETURN flex.exp.articulationPoints({
+            a: ['b', 'c'],
+            b: ['a', 'c', 'd'],
+            c: ['a', 'b'],
+            d: ['b', 'e'],
+            e: ['d']
+        }) AS ap`;
+        const result = await graph.query(q);
+        expect(result.data[0]['ap'].sort()).toEqual(['b', 'd']);
+
+        // Local module test with numeric keys
         const adj = {
             '0': ['1', '2'],
             '1': ['0', '2', '3'],
@@ -43,17 +54,6 @@ describe('FLEX Articulation Points Integration Tests', () => {
             '3': ['1', '4'],
             '4': ['3']
         };
-        const q = `RETURN flex.exp.articulationPoints({
-            '0': ['1', '2'],
-            '1': ['0', '2', '3'],
-            '2': ['0', '1'],
-            '3': ['1', '4'],
-            '4': ['3']
-        }) AS ap`;
-        const result = await graph.query(q);
-        expect(result.data[0]['ap'].sort()).toEqual(['1', '3']);
-
-        // Local module test
         const ap = articulationPoints(adj);
         expect(ap.sort()).toEqual(['1', '3']);
     });

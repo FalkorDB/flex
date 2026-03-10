@@ -100,8 +100,8 @@ RETURN u.name, u.id
 - Returns `null` when `edges` is not a list, or when `k` is not a non-negative number.
 
 ## Use Cases
-- **Influential-subnetwork discovery** — high-core-number nodes sit in dense, well-connected regions.
-- **Seed-set selection** — choose seeds from the innermost core for influence-maximisation algorithms.
+- **Influential subnetwork discovery** — high-core-number nodes sit in dense, well-connected regions.
+- **Seed set selection** — choose seeds from the innermost core for influence maximization algorithms.
 - **Graph pruning** — remove low-core periphery before running expensive analytics.
 - **Structural robustness analysis** — the core-number distribution reveals how resilient a network is to node removal.
 

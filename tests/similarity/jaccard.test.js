@@ -98,5 +98,21 @@ describe('FLEX Jaccard Integration Tests', () => {
 		expect(jaccardModule.jaccard([1, 2, 3], [3, 4, 5])).toBe(jaccardModule.jaccard([3, 4, 5], [1, 2, 3]));
 		expect(jaccardModule.jaccard(['a', 'b'], ['b', 'c'])).toBe(jaccardModule.jaccard(['b', 'c'], ['a', 'b']));
     });
-});
 
+    test('flex.sim.jaccard deduplicates repeated values', async () => {
+		const q = `
+		RETURN
+			flex.sim.jaccard([1, 1, 1], [1]) AS d1,
+			flex.sim.jaccard([1, 1, 2], [1, 2, 2]) AS d2
+		`;
+
+		const result = await graph.query(q);
+
+		expect(result.data[0]['d1']).toBe(1);
+		expect(result.data[0]['d2']).toBe(1);
+
+		expect(jaccardModule.jaccard([1, 1, 1], [1])).toBe(1);
+		expect(jaccardModule.jaccard([1, 1, 2], [1, 2, 2])).toBe(1);
+		expect(jaccardModule.jaccard([1, 1, 2], [2, 2, 3])).toBeCloseTo(1 / 3, 10);
+    });
+});

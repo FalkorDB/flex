@@ -22,7 +22,6 @@ describe('FLEX exp-algo Closeness Centrality Integration Tests', () => {
 
   test('module is importable in Node (conditional export)', () => {
     expect(typeof closenessModule.closenessCentrality).toBe('function');
-    expect(typeof closenessModule._flex_bfsDistancesCloseness).toBe('function');
   });
 
   test('flex.exp.closenessCentrality on a connected line graph', async () => {

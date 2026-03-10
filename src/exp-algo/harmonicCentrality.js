@@ -39,38 +39,6 @@ if (typeof module !== 'undefined' && module.exports) {
 
   const exp = g.__flexExpAlgo;
 
-  /**
-   * Run BFS from a single source over the undirected adjacency and return
-   * shortest-path distances to all reachable nodes.
-   *
-   * @param {Map} adjacency  node-id -> Map(neighbor-id -> weight)
-   * @param {*}   sourceId   starting node id
-   * @returns {Map<*, number>} node-id -> hop distance
-   */
-  function _flex_bfsDistances(adjacency, sourceId) {
-    const dist = new Map();
-    dist.set(sourceId, 0);
-
-    const queue = [sourceId];
-    let head = 0;
-
-    while (head < queue.length) {
-      const current = queue[head++];
-      const d = dist.get(current);
-      const neigh = adjacency.get(current);
-      if (!neigh) continue;
-
-      for (const nbrId of neigh.keys()) {
-        if (nbrId === current) continue; // skip self-loops
-        if (dist.has(nbrId)) continue;   // already visited
-        dist.set(nbrId, d + 1);
-        queue.push(nbrId);
-      }
-    }
-
-    return dist;
-  }
-
   function harmonicCentrality({
     nodes,
     direction = 'both',
@@ -82,6 +50,9 @@ if (typeof module !== 'undefined' && module.exports) {
   }) {
     if (typeof exp.buildUndirectedAdjacency !== 'function') {
       throw new TypeError('exp.harmonicCentrality: missing shared helper buildUndirectedAdjacency');
+    }
+    if (typeof exp.bfsDistances !== 'function') {
+      throw new TypeError('exp.harmonicCentrality: missing shared helper bfsDistances');
     }
 
     const built = exp.buildUndirectedAdjacency({
@@ -101,7 +72,7 @@ if (typeof module !== 'undefined' && module.exports) {
     const normalizedById = Object.create(null);
 
     for (const srcId of nodeIds) {
-      const dist = _flex_bfsDistances(adjacency, srcId);
+      const dist = exp.bfsDistances(adjacency, srcId);
 
       let sum = 0;
       for (const otherId of nodeIds) {
@@ -144,7 +115,6 @@ if (typeof module !== 'undefined' && module.exports) {
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
       harmonicCentrality,
-      _flex_bfsDistances,
     };
   }
 })();

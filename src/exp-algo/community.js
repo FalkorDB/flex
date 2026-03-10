@@ -429,6 +429,38 @@
   });
 
   /**
+   * Run BFS from a single source over an adjacency map and return
+   * shortest-path distances (hop count) to all reachable nodes.
+   *
+   * @param {Map} adjacency  node-id -> Map(neighbor-id -> weight)
+   * @param {*}   sourceId   starting node id
+   * @returns {Map<*, number>} node-id -> hop distance
+   */
+  defineIfMissing('bfsDistances', function bfsDistances(adjacency, sourceId) {
+    const dist = new Map();
+    dist.set(sourceId, 0);
+
+    const queue = [sourceId];
+    let head = 0;
+
+    while (head < queue.length) {
+      const current = queue[head++];
+      const d = dist.get(current);
+      const neigh = adjacency.get(current);
+      if (!neigh) continue;
+
+      for (const nbrId of neigh.keys()) {
+        if (nbrId === current) continue; // skip self-loops
+        if (dist.has(nbrId)) continue;   // already visited
+        dist.set(nbrId, d + 1);
+        queue.push(nbrId);
+      }
+    }
+
+    return dist;
+  });
+
+  /**
    * Induce a graph where each community becomes a node.
    * The returned graph is a weighted adjacency map where weights are summed between communities.
    */

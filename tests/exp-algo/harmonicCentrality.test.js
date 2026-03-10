@@ -22,7 +22,6 @@ describe('FLEX exp-algo Harmonic Centrality Integration Tests', () => {
 
   test('module is importable in Node (conditional export)', () => {
     expect(typeof harmonicModule.harmonicCentrality).toBe('function');
-    expect(typeof harmonicModule._flex_bfsDistances).toBe('function');
   });
 
   test('flex.exp.harmonicCentrality on a connected line graph', async () => {

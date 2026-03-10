@@ -40,8 +40,7 @@ function scc(edges) {
         onStack.add(v);
 
         const successors = adj.get(v) || [];
-        for (let i = 0; i < successors.length; i++) {
-            const w = successors[i];
+        for (const w of successors) {
             if (!indices.has(w)) {
                 strongconnect(w);
                 lowlinks.set(v, Math.min(lowlinks.get(v), lowlinks.get(w)));

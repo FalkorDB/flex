@@ -13,9 +13,9 @@ function sortComponents(components) {
     return components
         .map(c => [...c].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)))
         .sort((a, b) => {
-            const min_a = a[0];
-            const min_b = b[0];
-            return min_a < min_b ? -1 : min_a > min_b ? 1 : 0;
+            const minA = a[0];
+            const minB = b[0];
+            return minA < minB ? -1 : minA > minB ? 1 : 0;
         });
 }
 

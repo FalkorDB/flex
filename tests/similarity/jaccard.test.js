@@ -99,7 +99,7 @@ describe('FLEX Jaccard Integration Tests', () => {
 		expect(jaccardModule.jaccard(['a', 'b'], ['b', 'c'])).toBe(jaccardModule.jaccard(['b', 'c'], ['a', 'b']));
     });
 
-    test('flex.sim.jaccard deduplicates repeated values', async () => {
+    test('deduplicates repeated values in both Cypher and JavaScript', async () => {
 		const q = `
 		RETURN
 			flex.sim.jaccard([1, 1, 1], [1]) AS d1,

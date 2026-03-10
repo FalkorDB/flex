@@ -42,9 +42,9 @@ function topoSort(edges) {
     // Collect nodes with in-degree 0
     var nodes = Object.keys(adj);
     var queue = [];
-    for (var i = 0; i < nodes.length; i++) {
-        if (inDeg[nodes[i]] === 0) {
-            queue.push(nodes[i]);
+    for (var n = 0; n < nodes.length; n++) {
+        if (inDeg[nodes[n]] === 0) {
+            queue.push(nodes[n]);
         }
     }
 
@@ -77,7 +77,16 @@ function topoSort(edges) {
  * @returns {boolean} true if a cycle exists, false otherwise
  */
 function hasCycle(edges) {
-    return topoSort(edges) === null && Array.isArray(edges);
+    if (!Array.isArray(edges)) {
+        return false;
+    }
+    // Validate every edge before checking for cycles
+    for (var k = 0; k < edges.length; k++) {
+        if (!Array.isArray(edges[k]) || edges[k].length < 2) {
+            return false;
+        }
+    }
+    return topoSort(edges) === null;
 }
 
 falkor.register('exp.topoSort', topoSort);

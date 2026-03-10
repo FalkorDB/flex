@@ -133,5 +133,6 @@ describe('FLEX Experimental topoSort & hasCycle Integration Tests', () => {
     test('flex.exp.hasCycle - invalid input returns false', () => {
         expect(hasCycle(null)).toBe(false);
         expect(hasCycle('not an array')).toBe(false);
+        expect(hasCycle([['a']])).toBe(false);
     });
 });

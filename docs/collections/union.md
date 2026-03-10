@@ -60,9 +60,9 @@ RETURN flex.coll.union(p.categories, similar.categories) AS combinedCategories
 ## Notes
 - Automatically removes duplicates from the result
 - Works with any comparable data types
-- Order of elements in the result is not guaranteed
+- Elements keep the order of their first appearance across both input lists
 - Equivalent to mathematical set union operation
-- Both lists are spread and deduplicated using Set
+- The result is built with a Set while preserving first-seen element order
 
 ## See Also
 - [coll.intersection](./intersection.md) - Find common elements between lists

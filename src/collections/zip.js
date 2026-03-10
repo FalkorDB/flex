@@ -13,10 +13,10 @@ function zip(list1, list2) {
     if (!Array.isArray(list1) || !Array.isArray(list2)) return [];
 
     const length = Math.min(list1.length, list2.length);
-    const result = [];
+    const result = new Array(length);
 
     for (let i = 0; i < length; i++) {
-        result.push([list1[i], list2[i]]);
+        result[i] = [list1[i], list2[i]];
     }
 
     return result;

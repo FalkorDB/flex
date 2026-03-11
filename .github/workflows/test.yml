@@ -40,12 +40,13 @@ jobs:
       - name: Upload Coverage Report
         # This keeps the HTML report available for 14 days in the "Actions" tab
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: coverage/
 
       - name: Collect test coverage
+        if: github.event_name == 'pull_request'
         uses: ArtiomTr/jest-coverage-report-action@v2
         with:
           test-script: npx jest --runInBand --forceExit

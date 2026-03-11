@@ -31,8 +31,8 @@ function levenshtein(a, b) {
         [a, b] = [b, a];
     }
 
-    const prev = new Array(b.length + 1);
-    const curr = new Array(b.length + 1);
+    let prev = new Array(b.length + 1);
+    let curr = new Array(b.length + 1);
 
     // Initial row
     for (let j = 0; j <= b.length; j++) {
@@ -54,9 +54,7 @@ function levenshtein(a, b) {
         }
 
         // Swap buffers
-        for (let j = 0; j <= b.length; j++) {
-            prev[j] = curr[j];
-        }
+        [prev, curr] = [curr, prev];
     }
 
     return prev[b.length];

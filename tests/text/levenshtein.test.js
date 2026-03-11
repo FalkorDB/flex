@@ -93,5 +93,17 @@ describe('FLEX Levenshtein Integration Tests', () => {
 
         expect(levenshteinModule.levenshtein('distance', 'editing')).toBe(levenshteinModule.levenshtein('editing', 'distance'));
     });
-});
 
+    test('flex.text.levenshtein returns stable results across repeated module calls', () => {
+        const cases = [
+            ['saturday', 'sunday', 3],
+            ['a'.repeat(64), `${'a'.repeat(63)}b`, 1],
+            ['abcdefghij', 'abcdwxyzij', 4]
+        ];
+
+        for (const [a, b, expected] of cases) {
+            expect(levenshteinModule.levenshtein(a, b)).toBe(expected);
+            expect(levenshteinModule.levenshtein(b, a)).toBe(expected);
+        }
+    });
+});

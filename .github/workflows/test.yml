@@ -46,6 +46,7 @@ jobs:
           path: coverage/
 
       - name: Collect test coverage
+        if: github.event_name == 'pull_request'
         uses: ArtiomTr/jest-coverage-report-action@v2
         with:
           test-script: npx jest --runInBand --forceExit

@@ -28,5 +28,9 @@ describe('FLEX text.format Integration Tests', () => {
 
         expect(formatModule.format('Hello {0}', ['World'])).toBe('Hello World');
     });
-});
 
+    test('format replaces repeated placeholders and leaves unmatched ones unchanged', () => {
+        expect(formatModule.format('{0} + {0} = {1}', ['1', 2])).toBe('1 + 1 = 2');
+        expect(formatModule.format('Hello {0} {2}', ['World'])).toBe('Hello World {2}');
+    });
+});

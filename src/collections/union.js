@@ -10,7 +10,11 @@
  * @returns {Array}
  */
 function union (a, b) {
-  return [...new Set([...a, ...b])];
+  const set = new Set(a);
+  for (const value of b) {
+    set.add(value);
+  }
+  return [...set];
 }
 
 falkor.register('coll.union', union);

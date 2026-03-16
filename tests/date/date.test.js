@@ -1,5 +1,6 @@
 const { initializeFLEX } = require('../setup');
 
+const dateHelpers = require('../../src/date/_helpers');
 const dateFormatModule = require('../../src/date/format');
 const dateParseModule = require('../../src/date/parse');
 const dateTruncateModule = require('../../src/date/truncate');
@@ -160,5 +161,14 @@ describe('date.* module unit tests', () => {
         expect(parseOffset('-0500')).toBe(-300);
         expect(parseOffset('Z')).toBeNull();
         expect(parseOffset(null)).toBeNull();
+    });
+
+    test('date modules reuse shared date helper exports', () => {
+        expect(dateFormatModule._flex_normalizeDate).toBe(dateHelpers._flex_normalizeDate);
+        expect(dateTruncateModule._flex_normalizeDate).toBe(dateHelpers._flex_normalizeDate);
+        expect(dateToTimeZoneModule._flex_normalizeDate).toBe(dateHelpers._flex_normalizeDate);
+        expect(dateFormatModule._flex_parseTzOffsetMinutes).toBe(dateHelpers._flex_parseTzOffsetMinutes);
+        expect(dateParseModule._flex_parseTzOffsetMinutes).toBe(dateHelpers._flex_parseTzOffsetMinutes);
+        expect(dateToTimeZoneModule._flex_parseTzOffsetMinutes).toBe(dateHelpers._flex_parseTzOffsetMinutes);
     });
 });

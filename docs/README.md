@@ -92,6 +92,15 @@ Date and time manipulation, formatting, and parsing.
 | [date.truncate](./date/truncate.md) | Truncate date to specific unit (day, month, etc.) |
 | [date.toTimeZone](./date/toTimeZone.md) | Convert date to timezone offset |
 
+### Experimental DAG Utilities (`flex.exp.*`)
+
+Directed-graph helpers for topological ordering and cycle detection.
+
+| Function | Description |
+|----------|-------------|
+| [exp.topoSort](./exp/topoSort.md) | Topological sort of a directed graph given as edge pairs |
+| [exp.hasCycle](./exp/hasCycle.md) | Detect whether a directed graph contains a cycle |
+
 ### Bitwise Functions (`flex.bitwise.*`)
 
 Low-level bitwise operations on integers.
@@ -130,6 +139,10 @@ Low-level bitwise operations on integers.
 ### Permission and Flag Management
 - `bitwise.and`, `bitwise.or` - Check and set permission flags
 - `bitwise.xor` - Toggle flags
+
+### DAG and Dependency Analysis
+- `exp.topoSort` - Order tasks, builds, or packages by dependencies
+- `exp.hasCycle` - Validate that a dependency graph has no circular references
 
 ## Contributing
 

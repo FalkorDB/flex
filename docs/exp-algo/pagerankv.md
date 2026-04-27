@@ -13,7 +13,7 @@ It supports **weighted transitions**: if an edge has a numeric weight attribute 
 
 ## Syntax
 ```cypher
-flex.exp.pagerankv({nodes: nodes, direction: 'both', damping: 0.85, maxIterations: 50, tolerance: 1e-8})
+flex.exp.pagerankv({nodes: nodes, direction: 'both', damping: 0.85, maxIterations: 50, tolerance: 1e-8, personalization: {'42': 1}})
 ```
 
 ## Parameters
@@ -28,6 +28,8 @@ flex.exp.pagerankv({nodes: nodes, direction: 'both', damping: 0.85, maxIteration
 | `weightAttribute` | `string \| list<string>` | No | Relationship property name(s) to read weights from. Default: `'weight'`. |
 | `defaultWeight` | `float` | No | Weight to use when no attribute is present. Default: `1`. |
 | `minWeight` | `float` | No | Clamp lower bound for weights. Default: `0`. |
+| `personalization` | `map<string, float>` | No | Personalized restart weights keyed by node id. Keys may be a subset of supplied nodes. Values are normalized over in-graph keys. Missing nodes receive zero. Default: uniform distribution over all nodes. |
+| `dangling` | `map<string, float>` | No | Redistribution weights for dangling nodes (nodes with no outgoing edges). Values are normalized over in-graph keys. Default: `personalization` (or uniform when `personalization` is omitted). |
 | `debug` | `boolean` | No | When `true`, returns extra debug information (adjacency stats + per-iteration deltas). Default: `false`. |
 
 ## Returns
@@ -64,9 +66,25 @@ WITH collect(n) AS nodes
 RETURN flex.exp.pagerankv({nodes: nodes, weightAttribute: 'strength'}) AS res;
 ```
 
+### Example 3: Personalized PageRank (seed-biased restarts)
+```cypher
+MATCH (n:N)
+WITH n ORDER BY ID(n)
+WITH collect(n) AS nodes
+RETURN flex.exp.pagerankv({
+  nodes: nodes,
+  personalization: {
+    '42': 0.7,
+    '87': 0.3
+  }
+}) AS res;
+```
+
 ## Notes
 - **Edge weights:** when `weightAttribute` is present and numeric, it is used to distribute rank proportionally across outgoing edges.
-- **Dangling nodes:** nodes with no outgoing edges distribute their rank uniformly to all nodes.
+- **Personalization normalization:** `personalization` does not need to sum to `1`; in-graph values are normalized automatically.
+- **Dangling nodes:** when `dangling` is omitted, dangling mass is redistributed using the personalization distribution (uniform when no personalization is provided).
+- **Validation:** `personalization` and `dangling` values must be finite and non-negative, and at least one in-graph value must be positive.
 
 ## See Also
 - [docs/README.md](../README.md)

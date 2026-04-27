@@ -42,6 +42,54 @@ if (typeof module !== 'undefined' && module.exports) {
     return obj;
   }
 
+  function normalizeNodeWeightMap(raw, { n, stableIndex, name }) {
+    if (raw == null) {
+      const uniform = new Array(n);
+      for (let i = 0; i < n; i++) uniform[i] = 1 / n;
+      return uniform;
+    }
+
+    const isMap = raw instanceof Map;
+    const isObject = !isMap && typeof raw === 'object' && !Array.isArray(raw);
+    if (!isObject && !isMap) {
+      throw new TypeError(`pagerankv: \`${name}\` must be an object map or Map`);
+    }
+
+    const vec = new Array(n);
+    for (let i = 0; i < n; i++) vec[i] = 0;
+
+    const addEntry = (k, v) => {
+      if (typeof v !== 'number' || !Number.isFinite(v)) {
+        throw new TypeError(`pagerankv: \`${name}\` values must be finite numbers`);
+      }
+      if (v < 0) {
+        throw new RangeError(`pagerankv: \`${name}\` values must be >= 0`);
+      }
+
+      const sid = exp.stableKeyPart(k);
+      const idx = stableIndex.get(sid);
+      if (typeof idx !== 'number') return;
+      vec[idx] += v;
+    };
+
+    if (isMap) {
+      for (const [k, v] of raw.entries()) addEntry(k, v);
+    } else {
+      for (const [k, v] of Object.entries(raw)) addEntry(k, v);
+    }
+
+    let sum = 0;
+    for (let i = 0; i < n; i++) sum += vec[i];
+    if (!(sum > 0)) {
+      throw new TypeError(
+        `pagerankv: \`${name}\` must assign positive weight to at least one input node`
+      );
+    }
+
+    for (let i = 0; i < n; i++) vec[i] /= sum;
+    return vec;
+  }
+
   /**
    * Weighted PageRank over a node set.
    *
@@ -55,6 +103,8 @@ if (typeof module !== 'undefined' && module.exports) {
    * @param {string|string[]} [params.weightAttribute='weight'] Edge attribute(s) to read weight from.
    * @param {number} [params.defaultWeight=1] Weight to use when attribute is missing.
    * @param {number} [params.minWeight=0] Lower bound clamp for weights.
+   * @param {Object<string,number>|Map<any,number>} [params.personalization]
+   * @param {Object<string,number>|Map<any,number>} [params.dangling]
    * @param {(node:any)=>any} [params.getNodeId]
    * @param {boolean} [params.debug=false]
    *
@@ -70,6 +120,8 @@ if (typeof module !== 'undefined' && module.exports) {
     weightAttribute = 'weight',
     defaultWeight = 1,
     minWeight = 0,
+    personalization = null,
+    dangling = null,
     getNodeId = exp.defaultGetNodeId,
     debug = false,
   }) {
@@ -115,8 +167,11 @@ if (typeof module !== 'undefined' && module.exports) {
         : 1e-8;
 
     const index = new Map();
+    const stableIndex = new Map();
     for (let i = 0; i < n; i++) {
-      index.set(nodeIds[i], i);
+      const id = nodeIds[i];
+      index.set(id, i);
+      stableIndex.set(exp.stableKeyPart(id), i);
     }
 
     const outWeight = new Array(n);
@@ -138,7 +193,20 @@ if (typeof module !== 'undefined' && module.exports) {
 
     let next = new Array(n);
 
-    const base = (1 - clampDamping) / n;
+    const personalizationVector = normalizeNodeWeightMap(personalization, {
+      n,
+      stableIndex,
+      name: 'personalization',
+    });
+
+    const danglingVector =
+      dangling == null
+        ? personalizationVector
+        : normalizeNodeWeightMap(dangling, {
+            n,
+            stableIndex,
+            name: 'dangling',
+          });
 
     let converged = false;
     let iterations = 0;
@@ -147,7 +215,7 @@ if (typeof module !== 'undefined' && module.exports) {
     for (let iter = 0; iter < maxIter; iter++) {
       iterations = iter + 1;
 
-      for (let i = 0; i < n; i++) next[i] = base;
+      for (let i = 0; i < n; i++) next[i] = (1 - clampDamping) * personalizationVector[i];
 
       let danglingMass = 0;
 
@@ -177,8 +245,8 @@ if (typeof module !== 'undefined' && module.exports) {
       }
 
       if (danglingMass > 0) {
-        const add = (clampDamping * danglingMass) / n;
-        for (let j = 0; j < n; j++) next[j] += add;
+        const add = clampDamping * danglingMass;
+        for (let j = 0; j < n; j++) next[j] += add * danglingVector[j];
       }
 
       let delta = 0;

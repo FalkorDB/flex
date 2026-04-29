@@ -79,6 +79,116 @@ describe('FLEX exp-algo PageRankV Integration Tests', () => {
     expect(sum).toBeLessThan(1.001);
   });
 
+  test('flex.exp.pagerankv supports composite weightAttribute maps (weighted sum)', async () => {
+    await graph.query(`MATCH (n) DETACH DELETE n`);
+
+    await graph.query(`
+      CREATE (a:N {name:'a'}), (b:N {name:'b'}), (c:N {name:'c'})
+      CREATE
+        (a)-[:R {cooccurrence_count:1, similarity:10}]->(b),
+        (a)-[:R {cooccurrence_count:10, similarity:1}]->(c),
+        (b)-[:R {cooccurrence_count:1, similarity:1}]->(a),
+        (c)-[:R {cooccurrence_count:1, similarity:1}]->(a)
+    `);
+
+    const idRows = await graph.query(`
+      MATCH (n:N)
+      RETURN ID(n) AS id, n.name AS name
+      ORDER BY id
+    `);
+
+    const nameToId = new Map();
+    for (const row of idRows.data) {
+      nameToId.set(row.name, String(row.id));
+    }
+
+    const firstFoundOut = await graph.query(`
+      MATCH (n:N)
+      WITH n ORDER BY ID(n)
+      WITH collect(n) AS nodes
+      RETURN flex.exp.pagerankv({
+        nodes: nodes,
+        maxIterations: 200,
+        tolerance: 1e-12,
+        weightAttribute: ['cooccurrence_count', 'similarity']
+      }) AS res
+    `);
+
+    const firstFoundScores = firstFoundOut.data[0].res.scores;
+    const bFirstFound = firstFoundScores[nameToId.get('b')];
+    const cFirstFound = firstFoundScores[nameToId.get('c')];
+
+    expect(cFirstFound).toBeGreaterThan(bFirstFound);
+
+    const compositeOut = await graph.query(`
+      MATCH (n:N)
+      WITH n ORDER BY ID(n)
+      WITH collect(n) AS nodes
+      RETURN flex.exp.pagerankv({
+        nodes: nodes,
+        maxIterations: 200,
+        tolerance: 1e-12,
+        weightAttribute: {cooccurrence_count: 0.2, similarity: 0.8}
+      }) AS res
+    `);
+
+    const compositeScores = compositeOut.data[0].res.scores;
+    const bComposite = compositeScores[nameToId.get('b')];
+    const cComposite = compositeScores[nameToId.get('c')];
+
+    expect(bComposite).toBeGreaterThan(cComposite);
+  });
+
+  test('pagerankv module supports custom getWeight callback in Node usage', () => {
+    const previousGraph = global.graph;
+
+    const a = { id: 'a' };
+    const b = { id: 'b' };
+    const c = { id: 'c' };
+
+    const edgeAB = { source: a, destination: b, cooccurrence_count: 1, similarity: 10 };
+    const edgeAC = { source: a, destination: c, cooccurrence_count: 10, similarity: 1 };
+    const edgeBA = { source: b, destination: a, cooccurrence_count: 1, similarity: 1 };
+    const edgeCA = { source: c, destination: a, cooccurrence_count: 1, similarity: 1 };
+
+    const outgoingByNodeId = new Map([
+      ['a', [edgeAB, edgeAC]],
+      ['b', [edgeBA]],
+      ['c', [edgeCA]],
+    ]);
+
+    global.graph = {
+      traverse: ([node]) => [outgoingByNodeId.get(String(node.id)) || []],
+    };
+
+    try {
+      const res = pagerankvModule.pagerankv({
+        nodes: [a, b, c],
+        direction: 'outgoing',
+        maxIterations: 200,
+        tolerance: 1e-12,
+        weightAttribute: ['cooccurrence_count', 'similarity'],
+        getWeight: (edge) => edge.cooccurrence_count * 0.2 + edge.similarity * 0.8,
+      });
+
+      const aScore = res.scores.a;
+      const bScore = res.scores.b;
+      const cScore = res.scores.c;
+
+      expect(bScore).toBeGreaterThan(cScore);
+
+      const sum = aScore + bScore + cScore;
+      expect(sum).toBeGreaterThan(0.999);
+      expect(sum).toBeLessThan(1.001);
+    } finally {
+      if (typeof previousGraph === 'undefined') {
+        delete global.graph;
+      } else {
+        global.graph = previousGraph;
+      }
+    }
+  });
+
   test('flex.exp.pagerankv supports NetworkX-style personalization (subset keys + normalization)', async () => {
     await graph.query(`MATCH (n) DETACH DELETE n`);
 

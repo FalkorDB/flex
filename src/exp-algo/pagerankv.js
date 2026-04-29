@@ -8,7 +8,7 @@
  * Pragmatic UDF-oriented implementation:
  * - builds directed adjacency from a provided node set using graph.traverse
  * - runs power-iteration until convergence or maxIterations
- * - supports weighted transitions based on an edge weight attribute
+ * - supports weighted transitions based on edge attributes or a custom weight function
  */
 
 // Ensure shared helpers are loaded when running under Node/Jest.
@@ -40,6 +40,79 @@ if (typeof module !== 'undefined' && module.exports) {
       obj[String(k)] = v;
     }
     return obj;
+  }
+
+  function coerceEdgeWeight(value, { defaultWeight, minWeight }) {
+    if (typeof value !== 'number' || !Number.isFinite(value)) {
+      return defaultWeight;
+    }
+    return value < minWeight ? minWeight : value;
+  }
+
+  function buildAttributeWeightedSumGetter(weightAttribute, { defaultWeight, minWeight }) {
+    const isMap = weightAttribute instanceof Map;
+    const isObject =
+      !isMap && weightAttribute != null && typeof weightAttribute === 'object' && !Array.isArray(weightAttribute);
+
+    if (!isMap && !isObject) return null;
+
+    const entries = isMap ? Array.from(weightAttribute.entries()) : Object.entries(weightAttribute);
+    if (entries.length === 0) {
+      throw new TypeError('pagerankv: `weightAttribute` map must include at least one key');
+    }
+
+    const terms = entries.map(([k, coeff]) => {
+      if (typeof coeff !== 'number' || !Number.isFinite(coeff)) {
+        throw new TypeError('pagerankv: `weightAttribute` map values must be finite numbers');
+      }
+      return [String(k), coeff];
+    });
+
+    return (edge) => {
+      if (!edge) return defaultWeight;
+
+      let seen = false;
+      let total = 0;
+
+      for (const [k, coeff] of terms) {
+        if (!Object.prototype.hasOwnProperty.call(edge, k)) continue;
+        const v = edge[k];
+        if (typeof v !== 'number' || !Number.isFinite(v)) continue;
+        total += v * coeff;
+        seen = true;
+      }
+
+      if (!seen) return defaultWeight;
+      return total < minWeight ? minWeight : total;
+    };
+  }
+
+  function buildEdgeWeightGetter({ weightAttribute, defaultWeight, minWeight, getWeight }) {
+    if (typeof getWeight === 'function') {
+      return (edge) =>
+        coerceEdgeWeight(
+          getWeight(edge, {
+            defaultWeight,
+            minWeight,
+            getEdgeWeight: exp.getEdgeWeight,
+          }),
+          { defaultWeight, minWeight }
+        );
+    }
+
+    const weightedSumGetter = buildAttributeWeightedSumGetter(weightAttribute, {
+      defaultWeight,
+      minWeight,
+    });
+    if (weightedSumGetter) return weightedSumGetter;
+
+    const keys = Array.isArray(weightAttribute) ? weightAttribute : [weightAttribute];
+    return (edge) =>
+      exp.getEdgeWeight(edge, {
+        keys,
+        defaultValue: defaultWeight,
+        minValue: minWeight,
+      });
   }
 
   function normalizeNodeWeightMap(raw, { n, stableIndex, name }) {
@@ -100,9 +173,10 @@ if (typeof module !== 'undefined' && module.exports) {
    * @param {number} [params.damping=0.85] Damping factor (alpha).
    * @param {number} [params.maxIterations=50] Maximum power-iterations.
    * @param {number} [params.tolerance=1e-8] L1 delta threshold for convergence.
-   * @param {string|string[]} [params.weightAttribute='weight'] Edge attribute(s) to read weight from.
+   * @param {string|string[]|Object<string,number>|Map<string,number>} [params.weightAttribute='weight'] Edge attribute key(s), or a key->coefficient map for weighted sum.
    * @param {number} [params.defaultWeight=1] Weight to use when attribute is missing.
    * @param {number} [params.minWeight=0] Lower bound clamp for weights.
+   * @param {(edge:any,ctx:{defaultWeight:number,minWeight:number,getEdgeWeight:(edge:any,opts?:object)=>number})=>number} [params.getWeight] Custom edge weight function; when provided, overrides `weightAttribute`.
    * @param {Object<string,number>|Map<any,number>} [params.personalization]
    * @param {Object<string,number>|Map<any,number>} [params.dangling]
    * @param {(node:any)=>any} [params.getNodeId]
@@ -120,26 +194,25 @@ if (typeof module !== 'undefined' && module.exports) {
     weightAttribute = 'weight',
     defaultWeight = 1,
     minWeight = 0,
+    getWeight = null,
     personalization = null,
     dangling = null,
     getNodeId = exp.defaultGetNodeId,
     debug = false,
   }) {
-    const keys = Array.isArray(weightAttribute) ? weightAttribute : [weightAttribute];
-
-    const getWeight = (edge) =>
-      exp.getEdgeWeight(edge, {
-        keys,
-        defaultValue: defaultWeight,
-        minValue: minWeight,
-      });
+    const edgeWeight = buildEdgeWeightGetter({
+      weightAttribute,
+      defaultWeight,
+      minWeight,
+      getWeight,
+    });
 
     const built = exp.buildDirectedAdjacency({
       nodes,
       direction,
       maxEdgesPerNode,
       getNodeId,
-      getWeight,
+      getWeight: edgeWeight,
       debug,
     });
 

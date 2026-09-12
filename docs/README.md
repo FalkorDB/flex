@@ -92,6 +92,15 @@ Date and time manipulation, formatting, and parsing.
 | [date.truncate](./date/truncate.md) | Truncate date to specific unit (day, month, etc.) |
 | [date.toTimeZone](./date/toTimeZone.md) | Convert date to timezone offset |
 
+### Experimental Algorithms (`flex.exp.*`)
+
+Graph algorithms and metrics (experimental). These may change in future releases.
+
+| Function | Description |
+|----------|-------------|
+| [exp.triangleCount](./exp/triangleCount.md) | Count triangles a node participates in |
+| [exp.clusteringCoefficient](./exp/clusteringCoefficient.md) | Compute local clustering coefficient for a node |
+
 ### Bitwise Functions (`flex.bitwise.*`)
 
 Low-level bitwise operations on integers.
@@ -130,6 +139,10 @@ Low-level bitwise operations on integers.
 ### Permission and Flag Management
 - `bitwise.and`, `bitwise.or` - Check and set permission flags
 - `bitwise.xor` - Toggle flags
+
+### Graph Analysis (Experimental)
+- `exp.triangleCount` - Fraud ring and sybil detection
+- `exp.clusteringCoefficient` - Social cohesion and community quality
 
 ## Contributing
 

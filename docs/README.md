@@ -92,6 +92,14 @@ Date and time manipulation, formatting, and parsing.
 | [date.truncate](./date/truncate.md) | Truncate date to specific unit (day, month, etc.) |
 | [date.toTimeZone](./date/toTimeZone.md) | Convert date to timezone offset |
 
+### Experimental Functions (`flex.exp.*`)
+
+Experimental graph algorithms — API may change in future releases.
+
+| Function | Description |
+|----------|-------------|
+| [exp.scc](./exp/scc.md) | Compute Strongly Connected Components of a directed graph |
+
 ### Bitwise Functions (`flex.bitwise.*`)
 
 Low-level bitwise operations on integers.
@@ -126,6 +134,9 @@ Low-level bitwise operations on integers.
 - `json.toJson`, `json.fromJsonMap` - JSON serialization
 - `map.removeKeys` - Filter sensitive data
 - `text.format` - Build formatted messages
+
+### Graph Analysis
+- `exp.scc` - Detect dependency loops and circular flows
 
 ### Permission and Flag Management
 - `bitwise.and`, `bitwise.or` - Check and set permission flags

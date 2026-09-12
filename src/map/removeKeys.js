@@ -10,19 +10,13 @@ function removeKeys(map, keys) {
         return {};
     }
 
-    const toRemove = {};
-    if (Array.isArray(keys)) {
-        for (let i = 0; i < keys.length; i++) {
-            const key = keys[i];
-            if (key != null) {
-                toRemove[key] = true;
-            }
-        }
-    }
+    const toRemove = new Set(
+        Array.isArray(keys) ? keys.filter((key) => key != null) : []
+    );
 
     const result = {};
     for (const key in map) {
-        if (Object.prototype.hasOwnProperty.call(map, key) && !toRemove[key]) {
+        if (Object.prototype.hasOwnProperty.call(map, key) && !toRemove.has(key)) {
             result[key] = map[key];
         }
     }

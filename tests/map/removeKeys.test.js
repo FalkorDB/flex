@@ -35,4 +35,14 @@ describe('FLEX map.removeKeys Integration Tests', () => {
 
         expect(removeKeysModule.removeKeys(null, ['a'])).toEqual({});
     });
+
+    test('flex.map.removeKeys ignores null keys in removal list', async () => {
+        const q = `
+        RETURN flex.map.removeKeys({a: 1, b: 2, c: 3}, ['b', NULL, 'c']) AS m
+        `;
+        const result = await graph.query(q);
+        expect(result.data[0]['m']).toEqual({ a: 1 });
+
+        expect(removeKeysModule.removeKeys({a: 1, b: 2, c: 3}, ['b', null, 'c'])).toEqual({ a: 1 });
+    });
 });

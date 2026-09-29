@@ -7,6 +7,13 @@
  * @param {string|null} tz offset like "+02:00" or "-0500" (optional)
  * @returns {Date|null}
  */
+const _flex_parseHelpers = typeof module !== 'undefined' && module.exports
+    ? require('./_helpers')
+    : null;
+const _flex_parseParseTzOffsetMinutes = _flex_parseHelpers
+    ? _flex_parseHelpers._flex_parseTzOffsetMinutes
+    : _flex_parseTzOffsetMinutes;
+
 function parse(text, pattern, tz) {
     if (text == null) {
         return null;
@@ -42,7 +49,7 @@ function parse(text, pattern, tz) {
     }
 
     // Optional timezone offset handling: interpret the parsed date as if in tz and convert to UTC
-    const offsetMinutes = _flex_parseTzOffsetMinutes(tz);
+    const offsetMinutes = _flex_parseParseTzOffsetMinutes(tz);
     if (offsetMinutes !== null) {
         // Local time in tz -> UTC instant
         const utcMillis = d.getTime() - offsetMinutes * 60000;
@@ -50,16 +57,6 @@ function parse(text, pattern, tz) {
     }
 
     return d;
-}
-
-function _flex_parseTzOffsetMinutes(tz) {
-    if (typeof tz !== 'string') return null;
-    const m = /^([+-])(\d{2}):?(\d{2})?$/.exec(tz);
-    if (!m) return null;
-    const sign = m[1] === '-' ? -1 : 1;
-    const hours = Number(m[2]);
-    const mins = m[3] ? Number(m[3]) : 0;
-    return sign * (hours * 60 + mins);
 }
 
 falkor.register('date.parse', parse);
@@ -70,6 +67,6 @@ falkor.register('date.parse', parse);
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         parse,
-        _flex_parseTzOffsetMinutes,
+        _flex_parseTzOffsetMinutes: _flex_parseParseTzOffsetMinutes,
     };
 }

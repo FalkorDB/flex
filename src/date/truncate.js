@@ -6,8 +6,15 @@
  * @param {string} unit
  * @returns {Date|null}
  */
+const _flex_truncateHelpers = typeof module !== 'undefined' && module.exports
+    ? require('./_helpers')
+    : null;
+const _flex_truncateNormalizeDate = _flex_truncateHelpers
+    ? _flex_truncateHelpers._flex_normalizeDate
+    : _flex_normalizeDate;
+
 function truncate(datetime, unit) {
-    const d0 = _flex_normalizeDate(datetime);
+    const d0 = _flex_truncateNormalizeDate(datetime);
     if (!d0) return null;
     const d = new Date(d0.getTime());
 
@@ -52,22 +59,6 @@ function truncate(datetime, unit) {
     return d;
 }
 
-function _flex_normalizeDate(value) {
-    if (value instanceof Date) {
-        if (isNaN(value.getTime())) return null;
-        return value;
-    }
-    if (typeof value === 'number') {
-        const d = new Date(value);
-        return isNaN(d.getTime()) ? null : d;
-    }
-    if (value == null) {
-        return null;
-    }
-    const d2 = new Date(String(value));
-    return isNaN(d2.getTime()) ? null : d2;
-}
-
 falkor.register('date.truncate', truncate);
 
 // Conditional Export for Jest
@@ -76,6 +67,6 @@ falkor.register('date.truncate', truncate);
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         truncate,
-        _flex_normalizeDate,
+        _flex_normalizeDate: _flex_truncateNormalizeDate,
     };
 }

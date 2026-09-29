@@ -11,8 +11,18 @@
  * @param {string|null} tz offset like "+02:00" (optional)
  * @returns {string|null}
  */
+const _flex_formatHelpers = typeof module !== 'undefined' && module.exports
+    ? require('./_helpers')
+    : null;
+const _flex_formatNormalizeDate = _flex_formatHelpers
+    ? _flex_formatHelpers._flex_normalizeDate
+    : _flex_normalizeDate;
+const _flex_formatParseTzOffsetMinutes = _flex_formatHelpers
+    ? _flex_formatHelpers._flex_parseTzOffsetMinutes
+    : _flex_parseTzOffsetMinutes;
+
 function dateFormat(datetime, pattern, tz) {
-    let d = _flex_normalizeDate(datetime);
+    let d = _flex_formatNormalizeDate(datetime);
     if (!d) return null;
 
     // Default pattern approximating ISO8601 in UTC
@@ -20,7 +30,7 @@ function dateFormat(datetime, pattern, tz) {
         pattern = 'YYYY-MM-DDTHH:mm:ss[Z]';
     }
 
-    const offsetMinutes = _flex_parseTzOffsetMinutes(tz);
+    const offsetMinutes = _flex_formatParseTzOffsetMinutes(tz);
     if (offsetMinutes !== null) {
         // Show local wall time in the given offset for the same instant
         d = new Date(d.getTime() + offsetMinutes * 60000);
@@ -53,32 +63,6 @@ function dateFormat(datetime, pattern, tz) {
     return out;
 }
 
-function _flex_normalizeDate(value) {
-    if (value instanceof Date) {
-        if (isNaN(value.getTime())) return null;
-        return value;
-    }
-    if (typeof value === 'number') {
-        const d = new Date(value);
-        return isNaN(d.getTime()) ? null : d;
-    }
-    if (value == null) {
-        return null;
-    }
-    const d2 = new Date(String(value));
-    return isNaN(d2.getTime()) ? null : d2;
-}
-
-function _flex_parseTzOffsetMinutes(tz) {
-    if (typeof tz !== 'string') return null;
-    const m = /^([+-])(\d{2}):?(\d{2})?$/.exec(tz);
-    if (!m) return null;
-    const sign = m[1] === '-' ? -1 : 1;
-    const hours = Number(m[2]);
-    const mins = m[3] ? Number(m[3]) : 0;
-    return sign * (hours * 60 + mins);
-}
-
 falkor.register('date.format', dateFormat);
 
 // Conditional Export for Jest
@@ -90,7 +74,7 @@ if (typeof module !== 'undefined' && module.exports) {
         format: dateFormat,
         // Extra exports useful for unit tests
         dateFormat,
-        _flex_normalizeDate,
-        _flex_parseTzOffsetMinutes,
+        _flex_normalizeDate: _flex_formatNormalizeDate,
+        _flex_parseTzOffsetMinutes: _flex_formatParseTzOffsetMinutes,
     };
 }

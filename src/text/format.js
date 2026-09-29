@@ -12,11 +12,10 @@
 // sprintf format the string (Basic implementation)
 function format(str, params) {
 	if (str === null) return null;
-	let result = str;
-	params.forEach((param, i) => {
-		result = result.replace(new RegExp(`\\{${i}\\}`, 'g'), param);
+	return str.replace(/\{(\d+)\}/g, (match, index) => {
+		const i = Number(index);
+		return i < params.length ? String(params[i]) : match;
 	});
-	return result;
 }
 
 falkor.register('text.format', format);

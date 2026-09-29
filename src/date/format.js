@@ -1,3 +1,9 @@
+function _flex_padDatePart(num, size) {
+    let s = String(num);
+    while (s.length < size) s = '0' + s;
+    return s;
+}
+
 /**
  * Format a date/time value using a simple token-based pattern.
  * Supported tokens: YYYY, MM, DD, HH, mm, ss, SSS, [Z].
@@ -26,12 +32,6 @@ function dateFormat(datetime, pattern, tz) {
         d = new Date(d.getTime() + offsetMinutes * 60000);
     }
 
-    function pad(num, size) {
-        let s = String(num);
-        while (s.length < size) s = '0' + s;
-        return s;
-    }
-
     const year = d.getUTCFullYear();
     const month = d.getUTCMonth() + 1;
     const day = d.getUTCDate();
@@ -41,13 +41,13 @@ function dateFormat(datetime, pattern, tz) {
     const ms = d.getUTCMilliseconds();
 
     let out = pattern;
-    out = out.replace('YYYY', pad(year, 4));
-    out = out.replace('MM', pad(month, 2));
-    out = out.replace('DD', pad(day, 2));
-    out = out.replace('HH', pad(hour, 2));
-    out = out.replace('mm', pad(minute, 2));
-    out = out.replace('ss', pad(second, 2));
-    out = out.replace('SSS', pad(ms, 3));
+    out = out.replace('YYYY', _flex_padDatePart(year, 4));
+    out = out.replace('MM', _flex_padDatePart(month, 2));
+    out = out.replace('DD', _flex_padDatePart(day, 2));
+    out = out.replace('HH', _flex_padDatePart(hour, 2));
+    out = out.replace('mm', _flex_padDatePart(minute, 2));
+    out = out.replace('ss', _flex_padDatePart(second, 2));
+    out = out.replace('SSS', _flex_padDatePart(ms, 3));
     out = out.replace('[Z]', 'Z');
 
     return out;

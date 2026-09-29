@@ -35,4 +35,11 @@ describe('FLEX Collections union Module Integration Tests', () => {
 		expect(result.data[0]['union'].sort((a, b) => a - b)).toEqual([1, 2]);
 		expect(unionModule.union([1, 2], []).sort((a, b) => a - b)).toEqual([1, 2]);
 	});
+
+	test('flex.coll.union preserves first occurrence order while deduplicating', async () => {
+		const query = "RETURN flex.coll.union([2, 1, 2], [3, 1, 4]) AS union";
+		const result = await graph.query(query);
+		expect(result.data[0]['union']).toEqual([2, 1, 3, 4]);
+		expect(unionModule.union([2, 1, 2], [3, 1, 4])).toEqual([2, 1, 3, 4]);
+	});
 });

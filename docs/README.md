@@ -105,6 +105,15 @@ Low-level bitwise operations on integers.
 | [bitwise.shiftLeft](./bitwise/shiftLeft.md) | Left bit shift operation |
 | [bitwise.shiftRight](./bitwise/shiftRight.md) | Right bit shift with sign extension |
 
+### Experimental Graph Algorithms (`flex.exp.*`)
+
+Graph algorithms for connectivity and resilience analysis.
+
+| Function | Description |
+|----------|-------------|
+| [exp.articulationPoints](./exp/articulationPoints.md) | Find articulation points (cut vertices) whose removal disconnects the graph |
+| [exp.bridges](./exp/bridges.md) | Find bridges (cut edges) whose removal disconnects the graph |
+
 ## Common Use Cases
 
 ### Data Cleaning and Normalization
@@ -130,6 +139,10 @@ Low-level bitwise operations on integers.
 ### Permission and Flag Management
 - `bitwise.and`, `bitwise.or` - Check and set permission flags
 - `bitwise.xor` - Toggle flags
+
+### Graph Resilience and Failure Analysis
+- `exp.articulationPoints` - Identify single points of failure (critical nodes)
+- `exp.bridges` - Identify critical links whose removal partitions the network
 
 ## Contributing
 

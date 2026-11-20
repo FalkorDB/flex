@@ -34,6 +34,13 @@ const getAllFiles = (dirPath, arrayOfFiles = []) => {
 console.log('🔨 Building FLEX bundle from nested directories...');
 
 const allFiles = getAllFiles(srcDir);
+const dateHelpersFile = path.join(srcDir, 'date/_helpers.js');
+const dateHelpersIndex = allFiles.indexOf(dateHelpersFile);
+
+if (dateHelpersIndex !== -1) {
+    allFiles.splice(dateHelpersIndex, 1);
+    allFiles.unshift(dateHelpersFile);
+}
 
 const combinedContent = allFiles.map(filePath => {
     // Get a clean relative path for the header (e.g., "collections/shuffle.js")

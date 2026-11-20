@@ -37,7 +37,7 @@ function jaroWinkler(s1, s2) {
 
         for (let j = start; j < end; j++) {
             if (s2Matches[j]) continue;
-            if (s1[i] !== s2[j]) continue;
+            if (s1.charCodeAt(i) !== s2.charCodeAt(j)) continue;
 
             s1Matches[i] = true;
             s2Matches[j] = true;
@@ -55,7 +55,7 @@ function jaroWinkler(s1, s2) {
     for (let i = 0; i < len1; i++) {
         if (!s1Matches[i]) continue;
         while (!s2Matches[k]) k++;
-        if (s1[i] !== s2[k]) t++;
+        if (s1.charCodeAt(i) !== s2.charCodeAt(k)) t++;
         k++;
     }
 
@@ -72,7 +72,7 @@ function jaroWinkler(s1, s2) {
     const maxPrefix = 4;
 
     for (let i = 0; i < Math.min(maxPrefix, len1, len2); i++) {
-        if (s1[i] === s2[i]) prefix++;
+        if (s1.charCodeAt(i) === s2.charCodeAt(i)) prefix++;
         else break;
     }
 

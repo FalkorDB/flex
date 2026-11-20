@@ -28,6 +28,7 @@ describe('FLEX Case Integration Tests', () => {
             ["capitalize('node')", "Node"],
             ["decapitalize('Node')", "node"],
             ["swapCase('aBc')", "AbC"],
+            ["swapCase('AbC123!')", "aBc123!"],
             ["camelCase('foo bar')", "fooBar"],
             ["upperCamelCase('foo bar')", "FooBar"],
             ["snakeCase('FooBar')", "foo_bar"],
@@ -42,9 +43,9 @@ describe('FLEX Case Integration Tests', () => {
         expect(caseModule.capitalize('node')).toBe('Node');
         expect(caseModule.decapitalize('Node')).toBe('node');
         expect(caseModule.swapCase('aBc')).toBe('AbC');
+        expect(caseModule.swapCase('AbC123!')).toBe('aBc123!');
         expect(caseModule.camelCase('foo bar')).toBe('fooBar');
         expect(caseModule.upperCamelCase('foo bar')).toBe('FooBar');
         expect(caseModule.snakeCase('FooBar')).toBe('foo_bar');
     });
 });
-
